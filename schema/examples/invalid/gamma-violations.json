@@ -1,0 +1,11 @@
+{
+  "schema": "klm-gamma/1.0",
+  "epistemic_label": "STALE",
+  "label_formula": "klm-label/1.0",
+  "evidence_score": 0.5,
+  "freshness_score": 0.2,
+  "coherence_score": null,
+  "declared_confidence": 0.7,
+  "confidence": 0.55,
+  "signal_status": { "freshness_score": "unavailable" }
+}

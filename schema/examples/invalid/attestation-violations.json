@@ -1,0 +1,49 @@
+{
+  "schema": "klm-attestation/0.1",
+  "inference": {
+    "id": "inf_bad",
+    "timestamp": "2026-07-22T21:40:00Z",
+    "model": { "identifier": "nm/fehm", "version": "0.6.0" }
+  },
+  "knowledge_contributions": [
+    {
+      "id": "ku_fabricated",
+      "content": "Parametric memory dressed up with a citation.",
+      "origin": "parametric",
+      "function": "declarative",
+      "source_reference": "docs/some-official-looking.pdf",
+      "source_class": "authoritative_record",
+      "epistemic_status": "measured"
+    }
+  ],
+  "evidence": [],
+  "claims": [
+    {
+      "id": "cl_only",
+      "text_span": { "start": 0, "end": 40 },
+      "support_status": "supported"
+    }
+  ],
+  "procedures": [
+    {
+      "id": "pr_theater",
+      "trigger": "never_checked",
+      "trigger_result": false,
+      "activation_status": "activated",
+      "affected_spans": ["sp_missing"]
+    }
+  ],
+  "metacognition": {
+    "declared_confidence": 0.9,
+    "grounded_confidence": {
+      "formula": "nage-grounded-meta/0.1",
+      "value": 0.2,
+      "components": { "evidence_coverage": 0.2 }
+    },
+    "gap": 0.5
+  },
+  "relations": [
+    { "type": "supports", "from": "ev_ghost", "to": "cl_only" }
+  ],
+  "nulls": {}
+}

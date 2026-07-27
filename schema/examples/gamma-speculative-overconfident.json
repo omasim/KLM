@@ -1,0 +1,29 @@
+{
+  "schema": "klm-gamma/1.0",
+  "epistemic_label": "SPECULATIVE",
+  "label_formula": "klm-label/1.0",
+  "evidence_score": 0.03,
+  "freshness_score": null,
+  "coherence_score": null,
+  "declared_confidence": 0.88,
+  "grounded_confidence": {
+    "formula": "klm-grounded/1.0",
+    "value": 0.03,
+    "components": { "evidence": 0.03 }
+  },
+  "confidence_gap": 0.85,
+  "confidence": 0.88,
+  "signal_status": {
+    "evidence_score": "measured",
+    "coherence_score": "unavailable",
+    "freshness_score": "unavailable",
+    "declared_confidence": "heuristic"
+  },
+  "nulls": {
+    "coherence_score": { "reason": "no_relational_signal" },
+    "freshness_score": { "reason": "no_contributing_varves" }
+  },
+  "warning": "Yanıt parametrik önsel üzerine kurulu — atfedilebilir kanıt yok; gap +0.85 aşırı-güveni gösteriyor.",
+  "dominant_source": "facies",
+  "provenance_map": { "facies": 0.97, "varve/fehm-en": 0.03 }
+}

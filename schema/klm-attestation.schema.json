@@ -1,0 +1,259 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nage.ai/klm/schema/klm-attestation/0.1",
+  "title": "KLM Attestation Record",
+  "description": "Normative machine-readable form of KLM Specification §6 — the per-inference attestation record as a typed-object + typed-edge graph. Operationalizes §2 (four load-bearing objects), §4 (epistemic status, honest null), §5 L4 (split confidence) and §6.2 (relations). KLM-0 'Declared' conformance is defined against this schema plus the semantic rules in validate_attestation.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "inference", "knowledge_contributions", "evidence", "claims", "procedures", "relations"],
+  "properties": {
+    "schema": { "const": "klm-attestation/0.1" },
+    "inference": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "timestamp", "model"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "timestamp": { "type": "string", "minLength": 1 },
+        "model": {
+          "type": "object",
+          "required": ["identifier", "version"],
+          "properties": {
+            "identifier": { "type": "string", "minLength": 1 },
+            "version": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": true
+        },
+        "configuration": { "type": ["object", "null"] },
+        "request_scope": {
+          "type": ["object", "null"],
+          "properties": {
+            "domain": { "type": ["string", "null"] },
+            "jurisdiction": { "type": ["string", "null"] }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "knowledge_contributions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/knowledge_unit" }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidence_object" }
+    },
+    "claims": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/claim" }
+    },
+    "procedures": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/procedure" }
+    },
+    "spans": {
+      "type": "array",
+      "description": "§2.6 — addressable character ranges over the output, referenced by id from relations (expressed_as / activated edges).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "start", "end"],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "start": { "type": "integer", "minimum": 0 },
+          "end": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "metacognition": {
+      "type": ["object", "null"],
+      "additionalProperties": true,
+      "properties": {
+        "declared_confidence": { "$ref": "#/$defs/nullableUnit" },
+        "grounded_confidence": {
+          "type": ["object", "null"],
+          "required": ["formula", "value", "components"],
+          "properties": {
+            "formula": { "type": "string", "minLength": 1 },
+            "value": { "$ref": "#/$defs/unit" },
+            "components": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": { "$ref": "#/$defs/unit" }
+            }
+          },
+          "additionalProperties": false
+        },
+        "gap": { "type": ["number", "null"], "minimum": -1, "maximum": 1 },
+        "signal_status": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/epistemic_status" }
+        }
+      }
+    },
+    "governance": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "engine": {
+          "type": ["object", "null"],
+          "description": "§8.1 reflective independence — the independently addressable component that produced the assessments. MUST be distinct from inference.model (the judge is not the author).",
+          "required": ["identifier", "version"],
+          "properties": {
+            "identifier": { "type": "string", "minLength": 1 },
+            "version": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": true
+        },
+        "assessments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": ["id", "namespace", "policy_id", "policy_version", "status", "responsible_object"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "namespace": {
+                "enum": ["safety", "privacy", "regulatory", "authorization", "audience", "scope"]
+              },
+              "policy_id": { "type": "string", "minLength": 1 },
+              "policy_version": { "type": "string", "minLength": 1 },
+              "status": { "enum": ["pass", "fail", "unknown", "not_applicable"] },
+              "responsible_object": { "type": "string", "minLength": 1 },
+              "evidence": { "type": ["string", "object", "null"] },
+              "epistemic_status": { "$ref": "#/$defs/epistemic_status" }
+            }
+          }
+        },
+        "policies": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": ["id", "version"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "version": { "type": "string", "minLength": 1 },
+              "jurisdiction": { "type": ["string", "null"] },
+              "effective_date": { "type": ["string", "null"] },
+              "source": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    },
+    "gamma": {
+      "type": ["object", "null"],
+      "description": "Optional embedded klm-gamma/1.0 record (validated by validate_gamma.py when present)."
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["type", "from", "to"],
+        "properties": {
+          "type": { "type": "string", "minLength": 1 },
+          "from": { "type": "string", "minLength": 1 },
+          "to": { "type": "string", "minLength": 1 },
+          "attribution_level": {
+            "enum": ["behavioral_association", "execution_attribution", "causal_contribution"]
+          }
+        }
+      }
+    },
+    "nulls": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["reason"],
+        "properties": { "reason": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "ext": { "type": "object", "additionalProperties": true }
+  },
+  "$defs": {
+    "unit": { "type": "number", "minimum": 0, "maximum": 1 },
+    "nullableUnit": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+    "epistemic_status": { "enum": ["measured", "heuristic", "synthesized", "unavailable"] },
+    "source_class": {
+      "enum": ["authoritative_record", "external_volatile", "user_assertion", "tool_result", "prior_summary", "model_generated"]
+    },
+    "knowledge_unit": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "content", "origin", "function", "source_reference", "source_class", "epistemic_status"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "content": { "type": ["string", "object"] },
+        "origin": { "enum": ["parametric", "injected"] },
+        "function": { "enum": ["declarative", "procedural"] },
+        "source_reference": { "type": ["string", "null"] },
+        "source_class": {
+          "oneOf": [{ "$ref": "#/$defs/source_class" }, { "type": "null" }]
+        },
+        "epistemic_status": { "$ref": "#/$defs/epistemic_status" },
+        "valid_from": { "type": ["string", "null"] },
+        "valid_until": { "type": ["string", "null"] },
+        "jurisdiction_or_scope": { "type": ["string", "null"] },
+        "version": { "type": ["string", "null"] },
+        "supersedes": { "type": ["string", "null"] },
+        "lifecycle": {
+          "oneOf": [
+            { "enum": ["draft", "active", "disputed", "superseded", "expired", "revoked", "deleted", "legally_retained"] },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "evidence_object": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "source_class"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "source_class": { "$ref": "#/$defs/source_class" },
+        "source_reference": { "type": ["string", "null"] },
+        "source_version": { "type": ["string", "null"] },
+        "content_hash": { "type": ["string", "null"] },
+        "retrieved_at": { "type": ["string", "null"] },
+        "retrieval_score": { "$ref": "#/$defs/nullableUnit" }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "text_span", "support_status"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "text_span": {
+          "type": "object",
+          "required": ["start", "end"],
+          "properties": {
+            "start": { "type": "integer", "minimum": 0 },
+            "end": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "support_status": { "enum": ["supported", "contradicted", "unsupported", "unknown"] },
+        "text": { "type": ["string", "null"] }
+      }
+    },
+    "procedure": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["id", "trigger", "trigger_result", "activation_status", "affected_spans"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "trigger": { "type": "string", "minLength": 1 },
+        "trigger_result": { "type": "boolean" },
+        "activation_status": { "enum": ["loaded", "triggered", "activated", "not_activated"] },
+        "affected_spans": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

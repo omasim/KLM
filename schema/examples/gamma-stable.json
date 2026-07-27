@@ -1,0 +1,27 @@
+{
+  "schema": "klm-gamma/1.0",
+  "epistemic_label": "STABLE",
+  "label_formula": "klm-label/1.0",
+  "evidence_score": 0.78,
+  "freshness_score": 0.9,
+  "coherence_score": 0.72,
+  "declared_confidence": 0.83,
+  "grounded_confidence": {
+    "formula": "klm-grounded/1.0",
+    "value": 0.795,
+    "components": { "evidence": 0.78, "coherence": 0.72, "freshness": 0.9 }
+  },
+  "confidence_gap": 0.035,
+  "confidence": 0.83,
+  "signal_status": {
+    "evidence_score": "measured",
+    "coherence_score": "measured",
+    "freshness_score": "heuristic",
+    "declared_confidence": "heuristic",
+    "grounded_confidence": "measured"
+  },
+  "warning": null,
+  "dominant_source": "varve/fehm-tr",
+  "provenance_map": { "facies": 0.22, "varve/fehm-tr": 0.63, "varve/cortex-reasoning": 0.15 },
+  "audit_ref": { "audit_id": "aud_9f2k1x", "frame_id": null, "signed_by": null }
+}

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://nage.ai/klm/schema/klm-gamma/1.0",
+  "title": "KLM Gamma Record",
+  "description": "Normative unified gamma (epistemic vector) shape for KLM-conforming producers. See docs/KLM-Gamma-Unification.md. A null core score MUST have a matching entry in `nulls`; not-known MUST NOT be encoded as zero.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "epistemic_label", "label_formula"],
+  "properties": {
+    "schema": { "const": "klm-gamma/1.0" },
+    "epistemic_label": {
+      "enum": ["STABLE", "PROBABLE", "UNCERTAIN", "CONTESTED", "OUTDATED", "SPECULATIVE"]
+    },
+    "label_formula": {
+      "type": "string",
+      "description": "Versioned id of the label decision tree. Reference: klm-label/1.0.",
+      "minLength": 1
+    },
+    "evidence_score": { "$ref": "#/$defs/nullableUnit" },
+    "freshness_score": { "$ref": "#/$defs/nullableUnit" },
+    "coherence_score": { "$ref": "#/$defs/nullableUnit" },
+    "declared_confidence": { "$ref": "#/$defs/nullableUnit" },
+    "grounded_confidence": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["formula", "value", "components"],
+      "properties": {
+        "formula": { "type": "string", "minLength": 1 },
+        "value": { "$ref": "#/$defs/unit" },
+        "components": {
+          "type": "object",
+          "description": "Preserved components (KLM Spec §5 L4 — no collapse). Keys: evidence, coherence, freshness, plus optional extensions.",
+          "additionalProperties": { "$ref": "#/$defs/unit" },
+          "minProperties": 1
+        }
+      }
+    },
+    "confidence_gap": {
+      "type": ["number", "null"],
+      "minimum": -1,
+      "maximum": 1,
+      "description": "declared_confidence - grounded_confidence.value. Positive = overconfidence. REQUIRED (non-null) when both sides are present."
+    },
+    "confidence": {
+      "$ref": "#/$defs/nullableUnit",
+      "description": "DEPRECATED alias of declared_confidence (compat until schema 2.0). MUST equal declared_confidence when both present."
+    },
+    "signal_status": {
+      "type": "object",
+      "additionalProperties": { "enum": ["measured", "heuristic", "synthesized", "unavailable"] }
+    },
+    "nulls": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["reason"],
+        "properties": { "reason": { "type": "string", "minLength": 1 } }
+      }
+    },
+    "warning": { "type": ["string", "null"] },
+    "dominant_source": { "type": ["string", "null"] },
+    "source_count": { "type": ["integer", "null"], "minimum": 0 },
+    "provenance_map": {
+      "type": ["object", "null"],
+      "additionalProperties": { "$ref": "#/$defs/unit" }
+    },
+    "tensions": {
+      "type": ["array", "null"],
+      "items": {
+        "type": "object",
+        "required": ["source_a", "source_b"],
+        "properties": {
+          "source_a": { "type": "string" },
+          "source_b": { "type": "string" },
+          "description": { "type": "string" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "audit_ref": {
+      "type": ["object", "null"],
+      "properties": {
+        "audit_id": { "type": "string" },
+        "frame_id": { "type": ["string", "null"] },
+        "signed_by": { "type": ["string", "null"] }
+      },
+      "required": ["audit_id"],
+      "additionalProperties": true
+    },
+    "ext": {
+      "type": "object",
+      "description": "Vendor extensions, namespaced ext.<vendor>.*. Consumers MUST NOT reject unknown keys.",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "unit": { "type": "number", "minimum": 0, "maximum": 1 },
+    "nullableUnit": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+  }
+}

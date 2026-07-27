@@ -1,0 +1,21 @@
+{
+  "schema": "klm-gamma/1.0",
+  "epistemic_label": "PROBABLE",
+  "label_formula": "klm-label/1.0",
+  "evidence_score": 0.42,
+  "freshness_score": null,
+  "coherence_score": 0.55,
+  "declared_confidence": 0.5,
+  "grounded_confidence": {
+    "formula": "klm-grounded/1.0",
+    "value": 0.4633,
+    "components": { "evidence": 0.42, "coherence": 0.55 }
+  },
+  "confidence_gap": 0.0367,
+  "confidence": 0.5,
+  "signal_status": { "freshness_score": "unavailable" },
+  "nulls": { "freshness_score": { "reason": "no_varve_age_metadata" } },
+  "warning": "Kaynak tazeliği belirlenemedi — OUTDATED kapısı atlandı.",
+  "dominant_source": "varve/bilge-ml",
+  "provenance_map": { "facies": 0.41, "varve/bilge-ml": 0.59 }
+}

@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "klm-conformance"
+version = "0.1.0"
+description = "KLM (Knowledge Layers Model) conformance toolchain — validators, signed envelopes, hash-chained logs, disclosure views. Stdlib-only."
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.9"
+# Deliberately empty: third-party verification must need nothing but Python.
+dependencies = []
+
+[project.urls]
+Specification = "https://github.com/nageai/klm"
+
+[project.scripts]
+klm-validate = "validate_attestation:cli"
+klm-validate-gamma = "validate_gamma:cli"
+klm-sign = "sign_attestation:cli"
+klm-log = "attestation_log:cli"
+klm-disclose = "disclosure:cli"
+
+[tool.hatch.build.targets.wheel]
+packages = ["schema"]
+
+[tool.hatch.build.targets.wheel.sources]
+"schema" = ""
