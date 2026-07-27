@@ -13,17 +13,21 @@ requires-python = ">=3.9"
 dependencies = []
 
 [project.urls]
-Specification = "https://github.com/nageai/klm"
+Specification = "https://github.com/omasim/KLM"
+Changelog = "https://github.com/omasim/KLM/blob/main/CHANGELOG.md"
 
 [project.scripts]
-klm-validate = "validate_attestation:cli"
-klm-validate-gamma = "validate_gamma:cli"
-klm-sign = "sign_attestation:cli"
-klm-log = "attestation_log:cli"
-klm-disclose = "disclosure:cli"
+klm-validate = "klm_conformance.validate_attestation:cli"
+klm-validate-gamma = "klm_conformance.validate_gamma:cli"
+klm-sign = "klm_conformance.sign_attestation:cli"
+klm-log = "klm_conformance.attestation_log:cli"
+klm-disclose = "klm_conformance.disclosure:cli"
 
+# Modules ship under the klm_conformance namespace — never as bare
+# top-level modules (generic names like `disclosure` would collide in
+# user environments).
 [tool.hatch.build.targets.wheel]
 packages = ["schema"]
 
 [tool.hatch.build.targets.wheel.sources]
-"schema" = ""
+"schema" = "klm_conformance"
