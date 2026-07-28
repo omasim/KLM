@@ -6,13 +6,15 @@ whole toolchain.
 ## 1. Install (30 seconds)
 
 ```bash
-git clone https://github.com/omasim/klm.git && cd klm
-pip install .
+pip install klm-conformance
 ```
 
 This gives you five commands: `klm-validate`, `klm-validate-gamma`,
-`klm-sign`, `klm-log`, `klm-disclose`. (PyPI release pending; installing
-from the clone is identical.)
+`klm-sign`, `klm-log`, `klm-disclose`. To also get the examples used below:
+
+```bash
+git clone https://github.com/omasim/KLM.git && cd KLM
+```
 
 ## 2. Validate the worked example (30 seconds)
 

@@ -1,5 +1,8 @@
 # KLM — Knowledge Layers Model
 
+[![PyPI](https://img.shields.io/pypi/v/klm-conformance)](https://pypi.org/project/klm-conformance/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+
 **An open reference standard for attestable knowledge in language-model systems.**
 
 A language model answers, and you believe it or you don't. KLM exists to make a
