@@ -1,0 +1,23 @@
+# PyPI publish via Trusted Publishing (OIDC) — no tokens anywhere.
+# One-time setup on PyPI: Account → Publishing → "Add a new pending publisher"
+#   project: klm-conformance · owner: omasim · repo: KLM
+#   workflow: publish.yml · environment: pypi
+name: Publish to PyPI
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write   # OIDC — this IS the credential
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv build
+      - run: uv publish --trusted-publishing always
