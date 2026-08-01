@@ -1,6 +1,6 @@
-# KLM Spec Amendment Draft — Attested Parametric Sources
+# KLM Spec Amendment — Attested Parametric Sources
 
-**Status:** Draft amendment to KLM Specification v0.1 §2.1 + §5 L0.
+**Status:** ✅ ACCEPTED (founder, 2026-08-02) — merged into Specification v0.2. Validator ships the capability gate (`parametric_attribution` block: mechanism/contribution/training_source_reference/training_source_class + measured discipline); bare parametric+source fabrication stays rejected. Example: `schema/examples/attestation-parametric-attributed.json` (KLM-4).
 **Origin:** Implementation finding, 2026-07-22 — the reference stack (SEDIM)
 can honestly do something §2.1 forbids, and the prohibition exists only
 because monolithic models cannot.

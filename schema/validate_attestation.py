@@ -128,11 +128,43 @@ def validate(record: dict) -> list[str]:
         sc = ku.get("source_class", "MISSING")
         sr = ku.get("source_reference", "MISSING")
         if origin == "parametric":
-            # §2.1: null if parametric — a parametric unit claiming a source is fabrication.
+            # §2.1: null if parametric — a parametric unit claiming a bare
+            # source is fabrication. This stays enforced (a monolithic
+            # emitter still cannot fake provenance here).
             if sr is not None:
                 e(f"{w}.source_reference must be null for parametric origin")
             if sc is not None:
                 e(f"{w}.source_class must be null for parametric origin")
+            # Amendment "Attested Parametric Sources" (spec v0.2): a unit
+            # with MECHANICAL parametric attribution MAY carry a separate
+            # parametric_attribution block. Optional; when present, all
+            # four fields + status discipline MUST hold. The plain
+            # source_reference above still stays null — the block is
+            # deliberately separate so legacy fabrication stays rejected.
+            pa = ku.get("parametric_attribution")
+            if pa is not None:
+                if not isinstance(pa, dict):
+                    e(f"{w}.parametric_attribution must be an object")
+                else:
+                    mech = pa.get("mechanism")
+                    if not isinstance(mech, str) or not mech:
+                        e(f"{w}.parametric_attribution.mechanism must be a versioned id "
+                          f"(deterministic, counterfactually-checkable — not model self-report)")
+                    contrib = pa.get("contribution")
+                    if not isinstance(contrib, (int, float)) or not (0.0 <= float(contrib) <= 1.0):
+                        e(f"{w}.parametric_attribution.contribution must be a unit float [0,1]")
+                    # Condition 2: contribution is a MEASURED quantity — the
+                    # unit's epistemic_status carries it; enforce measured.
+                    if ku.get("epistemic_status") != "measured":
+                        e(f"{w}.parametric_attribution present ⇒ epistemic_status must be 'measured' "
+                          f"(contribution is a measured share, §Amendment cond.2)")
+                    tsr = pa.get("training_source_reference")
+                    if not isinstance(tsr, str) or not tsr:
+                        e(f"{w}.parametric_attribution.training_source_reference must be an "
+                          f"addressable artifact id (hash/version — not a prose description)")
+                    tsc = pa.get("training_source_class")
+                    if tsc not in SOURCE_CLASSES:
+                        e(f"{w}.parametric_attribution.training_source_class must be a §2.5 class")
         elif origin == "injected":
             if sc not in SOURCE_CLASSES:
                 e(f"{w}.source_class must be a §2.5 class for injected origin")

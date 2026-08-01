@@ -1,7 +1,7 @@
 # KLM Specification
 
 **Knowledge Layers Model — Technical Specification**
-**Version:** 0.1 (working draft)
+**Version:** 0.2 (working draft) — v0.2 adds the Attested Parametric Sources amendment (§2.1 capability gate for mechanical parametric attribution); see docs/KLM-Amendment-Attested-Parametric.md
 **Status:** Candidate reference standard. This document is not yet ratified and is expected to change.
 **Relationship:** This specification operationalizes the concepts in the *KLM white paper* (v0.3) and the *KLM manifesto*. Where the white paper explains and persuades, this document defines and constrains. On any conflict of detail, this specification governs conformance; on any conflict of intent, the white paper governs meaning.
 

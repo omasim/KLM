@@ -8,6 +8,20 @@ existing validators; breaking changes bump the major version and ship with a
 migration note.** The specification document carries its own version and
 changes only through the amendment process (see CONTRIBUTING.md).
 
+## v0.2.0 — 2026-08-02 — Attested Parametric Sources
+
+- **Amendment accepted** (spec §2.1 + §5 L0): a knowledge unit with
+  *mechanical* parametric attribution MAY carry a `parametric_attribution`
+  block (`mechanism`, `contribution`, `training_source_reference`,
+  `training_source_class`) with measured-status discipline. The plain
+  `source_reference` still MUST be null — bare parametric+source
+  fabrication stays rejected. A capability gate, not a relaxation.
+- **Validator** enforces the four fields + measured-status rule;
+  `schema/examples/attestation-parametric-attributed.json` is a KLM-4
+  worked example carrying the block.
+- First spec change driven by the reference implementation exceeding the
+  standard — the pressure direction the manifesto invites.
+
 ## v0.1.0 — 2026-07-28 — Initial public release
 
 First public snapshot of the Knowledge Layers Model.
