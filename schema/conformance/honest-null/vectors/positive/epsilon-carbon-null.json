@@ -1,0 +1,12 @@
+{
+  "energy_wh": 0.222222,
+  "carbon_g": null,
+  "carbon_intensity_g_per_kwh": null,
+  "region": "mars-1",
+  "intensity_source": "",
+  "compute_seconds": 2.0,
+  "nulls": {
+    "carbon_g": { "reason": "no_trusted_grid_intensity_for_region_mars-1" },
+    "carbon_intensity_g_per_kwh": { "reason": "region_mars-1_not_in_intensity_registry" }
+  }
+}

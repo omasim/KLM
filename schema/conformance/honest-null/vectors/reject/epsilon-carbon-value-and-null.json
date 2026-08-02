@@ -1,0 +1,9 @@
+{
+  "energy_wh": 0.222222,
+  "carbon_g": 0.5,
+  "carbon_intensity_g_per_kwh": 110.0,
+  "region": "eu-west",
+  "intensity_source": "entso-e",
+  "compute_seconds": 2.0,
+  "nulls": { "carbon_g": { "reason": "claims_not_known_but_also_carries_0.5" } }
+}

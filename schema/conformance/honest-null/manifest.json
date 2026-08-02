@@ -1,0 +1,88 @@
+{
+  "amendment": "KLM-Amendment-Honest-Null-Boundaries",
+  "description": "Vendor-neutral conformance vectors for the honest-null discipline (not-known != zero). Record-level rules (3a/3b) are executable here against any implementation's validator; the boundary round-trip (rules 1/2) is a documented contract each implementation runs through its OWN codec. See README.md.",
+  "record_level_vectors": [
+    {
+      "file": "vectors/positive/gamma-coherence-null.json",
+      "kind": "gamma",
+      "nullable_fields": [
+        "coherence_score",
+        "freshness_score"
+      ],
+      "expect": "accept",
+      "note": "coherence is an honest null paired with a reason"
+    },
+    {
+      "file": "vectors/positive/gamma-freshness-null.json",
+      "kind": "gamma",
+      "nullable_fields": [
+        "coherence_score",
+        "freshness_score"
+      ],
+      "expect": "accept",
+      "note": "freshness is an honest null paired with a reason"
+    },
+    {
+      "file": "vectors/positive/epsilon-carbon-null.json",
+      "kind": "epsilon",
+      "nullable_fields": [
+        "carbon_g",
+        "carbon_intensity_g_per_kwh"
+      ],
+      "expect": "accept",
+      "note": "carbon is not-known (unknown grid), declared with a reason"
+    },
+    {
+      "file": "vectors/reject/gamma-coherence-value-and-null.json",
+      "kind": "gamma",
+      "nullable_fields": [
+        "coherence_score",
+        "freshness_score"
+      ],
+      "expect": "reject",
+      "rule": "3a",
+      "note": "coherence carries a value AND a nulls entry \u2014 pick one"
+    },
+    {
+      "file": "vectors/reject/gamma-coherence-null-no-reason.json",
+      "kind": "gamma",
+      "nullable_fields": [
+        "coherence_score",
+        "freshness_score"
+      ],
+      "expect": "reject",
+      "rule": "3b",
+      "note": "coherence is null but carries no nulls.<signal>.reason"
+    },
+    {
+      "file": "vectors/reject/epsilon-carbon-value-and-null.json",
+      "kind": "epsilon",
+      "nullable_fields": [
+        "carbon_g",
+        "carbon_intensity_g_per_kwh"
+      ],
+      "expect": "reject",
+      "rule": "3a",
+      "note": "carbon carries a value AND a nulls entry"
+    },
+    {
+      "file": "vectors/reject/epsilon-carbon-null-no-reason.json",
+      "kind": "epsilon",
+      "nullable_fields": [
+        "carbon_g",
+        "carbon_intensity_g_per_kwh"
+      ],
+      "expect": "reject",
+      "rule": "3b",
+      "note": "carbon is null but carries no reason"
+    }
+  ],
+  "boundary_round_trip": {
+    "description": "For each positive vector, an implementation MUST round-trip the record through its OWN constructor + wire encode + wire decode and assert the nullable field decodes AS null (not 0) and the reason survives. This is language-specific and not executable from this pack; the contract is in README.md. A conforming implementation ships wire round-trip tests that do exactly this.",
+    "positive_vectors": [
+      "vectors/positive/gamma-coherence-null.json",
+      "vectors/positive/gamma-freshness-null.json",
+      "vectors/positive/epsilon-carbon-null.json"
+    ]
+  }
+}

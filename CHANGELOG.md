@@ -8,6 +8,25 @@ existing validators; breaking changes bump the major version and ship with a
 migration note.** The specification document carries its own version and
 changes only through the amendment process (see CONTRIBUTING.md).
 
+## v0.2.1 — 2026-08-02 — Honest Nulls Across Boundaries
+
+- **Amendment accepted** (spec §4.5): the "not-known ≠ zero" guarantee (§4.4)
+  is extended from the emitted record to **every serialization boundary** an
+  implementation owns. A conforming implementation MUST NOT launder a `null`
+  to `0` in a constructor, MUST carry a `nulls` map on a wire whose scalar
+  cannot distinguish absence from zero (e.g. proto3 float), and MUST reject
+  both a value co-existing with a `nulls` entry and a `null` with no reason.
+  Applies to γ (`coherence_score`/`freshness_score`), the L1 vector, and the
+  ε carbon axis — where a fabricated `0` is a false "zero-carbon" claim.
+- **Conformance vectors** — new `schema/conformance/honest-null/`: 7
+  record-level vectors (positive honest nulls + fabrication rejects) for γ and
+  ε, a signal-agnostic reference checker cross-checked against
+  `validate_gamma.py`, and the per-implementation boundary round-trip contract.
+  `python3 run_conformance.py` → 7/7.
+- Motivated by three independent boundary defects found bringing up a
+  multi-organ reference stack — the record-level rule was necessary but not
+  sufficient.
+
 ## v0.2.0 — 2026-08-02 — Attested Parametric Sources
 
 - **Amendment accepted** (spec §2.1 + §5 L0): a knowledge unit with

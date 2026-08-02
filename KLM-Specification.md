@@ -1,7 +1,7 @@
 # KLM Specification
 
 **Knowledge Layers Model — Technical Specification**
-**Version:** 0.2 (working draft) — v0.2 adds the Attested Parametric Sources amendment (§2.1 capability gate for mechanical parametric attribution); see docs/KLM-Amendment-Attested-Parametric.md
+**Version:** 0.2 (working draft) — v0.2 adds the Attested Parametric Sources amendment (§2.1 capability gate for mechanical parametric attribution; see docs/KLM-Amendment-Attested-Parametric.md) and the Honest Nulls Across Boundaries amendment (§4.5 — honest nulls MUST survive every serialization boundary; see docs/KLM-Amendment-Honest-Null-Boundaries.md, conformance vectors in schema/conformance/honest-null/)
 **Status:** Candidate reference standard. This document is not yet ratified and is expected to change.
 **Relationship:** This specification operationalizes the concepts in the *KLM white paper* (v0.3) and the *KLM manifesto*. Where the white paper explains and persuades, this document defines and constrains. On any conflict of detail, this specification governs conformance; on any conflict of intent, the white paper governs meaning.
 
@@ -113,6 +113,32 @@ Where a required signal cannot be produced, the implementation **MUST** emit:
 ```
 
 **not-known MUST NOT be encoded as zero.** A null with reason is conforming; a fabricated plausible value is a conformance violation.
+
+### 4.5 Honest nulls across boundaries
+The §4.4 guarantee is a property of the emitted record, but a null is not
+self-preserving: it must survive **every serialization boundary the
+implementation owns** — constructor/validator, wire encode, and wire decode. A
+record that is conformant on emission but loses a null crossing its own wire is
+**NOT** conformant; conformance is end-to-end. A conforming implementation:
+
+1. **MUST NOT launder a null on construction** — a constructor MUST NOT coerce
+   an explicit `null` to a value (no `x ?? 0`). Only an *absent* field may take
+   a default.
+2. **MUST carry a nulls map on the wire** where the wire scalar cannot
+   represent absence distinctly from zero (e.g. a proto3 float): the null value
+   is elided and `nulls.<signal>.reason` is the source of truth; the decoder
+   MUST reconstruct the `null` from the nulls map, not read the placeholder
+   zero.
+3. **MUST reject fabrication both ways** — a validator MUST reject a signal that
+   carries a value **and** a `nulls` entry for the same signal, and a `null`
+   with **no** `nulls.<signal>.reason`. The first hides a real value behind a
+   not-known claim; the second asserts not-known without saying why.
+
+This applies to every nullable signal — γ (`coherence_score`,
+`freshness_score`, …), the L1 vector, and the ε axis (`carbon_g`,
+`carbon_intensity_g_per_kwh`), for which a fabricated `0` is a false
+"zero-carbon" claim. Conformance vectors: `schema/conformance/honest-null/`.
+See `docs/KLM-Amendment-Honest-Null-Boundaries.md`.
 
 ---
 

@@ -1,0 +1,9 @@
+{
+  "energy_wh": 0.222222,
+  "carbon_g": null,
+  "carbon_intensity_g_per_kwh": null,
+  "region": "mars-1",
+  "intensity_source": "",
+  "compute_seconds": 2.0,
+  "nulls": {}
+}
