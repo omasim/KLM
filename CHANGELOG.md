@@ -55,6 +55,9 @@ standard's author.
 
 ## v0.2.2 — 2026-09-30 — First packaged v0.2 toolchain
 
+*Tagged, not published to PyPI: superseded the same day by v0.3.0, which
+includes everything below. The first PyPI release after 0.1.0 is 0.3.0.*
+
 - **PyPI catch-up.** `klm-conformance` on PyPI was still `0.1.0`, so the
   validator changes of v0.2.0 (parametric-attribution gate) and v0.2.1
   (honest-null conformance pack) had never reached `pip install` users. This
