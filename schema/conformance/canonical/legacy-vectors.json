@@ -1,0 +1,97 @@
+{
+ "canonicalization": "klm-canonical/0-pyjson",
+ "description": "Legacy (pre-v0.3) canonical form, verify-only. Expected outputs were produced by the ORIGINAL canonical_bytes() of klm-conformance v0.2.2 (git 0ec1a97:schema/sign_attestation.py), i.e. Python json.dumps(obj, sort_keys=True, separators=(',', ':'), ensure_ascii=False). `differs_from_klm_canonical_1` marks inputs where the legacy bytes differ from klm-canonical/1 — the E1 class.",
+ "cases": [
+  {
+   "id": "integral-float-one",
+   "input": "1.0",
+   "expected": "1.0",
+   "sha256": "d0ff5974b6aa52cf562bea5921840c032a860a91a3512f7fe8f768f6bbe005f6",
+   "differs_from_klm_canonical_1": true
+  },
+  {
+   "id": "integral-float-zero",
+   "input": "0.0",
+   "expected": "0.0",
+   "sha256": "8aed642bf5118b9d3c859bd4be35ecac75b6e873cce34e7b6f554b06f75550d7",
+   "differs_from_klm_canonical_1": true
+  },
+  {
+   "id": "negative-zero",
+   "input": "-0.0",
+   "expected": "-0.0",
+   "sha256": "c26617c7ccbcaa6631b45d851b8cf56e21d2ca624bdb1193afdbd4b560702cec",
+   "differs_from_klm_canonical_1": true
+  },
+  {
+   "id": "e1-record",
+   "input": "{\"label\":\"STABLE\",\"claim_support\":1.0,\"coherence\":0.0,\"gap\":-0.0,\"grounded\":0.75}",
+   "expected": "{\"claim_support\":1.0,\"coherence\":0.0,\"gap\":-0.0,\"grounded\":0.75,\"label\":\"STABLE\"}",
+   "sha256": "ed9d2507f3c7ea65cb13dae9f5ab12f7ae14fc01c595651ab8103df88ce6378f",
+   "differs_from_klm_canonical_1": true
+  },
+  {
+   "id": "exp-1e21",
+   "input": "1e21",
+   "expected": "1e+21",
+   "sha256": "241c4643fa70b1dcde1205b71be4e3bebb17e9f880c8e1a33d0ead6c27271d3c",
+   "differs_from_klm_canonical_1": false
+  },
+  {
+   "id": "exp-1e-7",
+   "input": "1e-7",
+   "expected": "1e-07",
+   "sha256": "e485fac25775a7da830698e7daac582737fc8b43ba4b351467a16cf8ed83122a",
+   "differs_from_klm_canonical_1": true
+  },
+  {
+   "id": "plain-big-integral",
+   "input": "123456789012345680000.0",
+   "expected": "1.2345678901234568e+20",
+   "sha256": "38c00b1ef9d70a0602350e34134402993c65bd93fa62ef95dc2e249365a5ba42",
+   "differs_from_klm_canonical_1": true
+  },
+  {
+   "id": "sum-0.1-0.2",
+   "input": "0.30000000000000004",
+   "expected": "0.30000000000000004",
+   "sha256": "06bad31060c1212ae832de4c031f7b31e3b48aed57858294478cb19450cf34ca",
+   "differs_from_klm_canonical_1": false
+  },
+  {
+   "id": "keys-astral-before-high-bmp",
+   "input": "{\"\\ufb33\":\"bmp\",\"\\ud83d\\ude00\":\"astral\"}",
+   "expected": "{\"דּ\":\"bmp\",\"😀\":\"astral\"}",
+   "sha256": "e76aa0a0a91f52b59452e0865170494316ba469877afcea26cc25728688cc308",
+   "differs_from_klm_canonical_1": true
+  },
+  {
+   "id": "string-non-ascii",
+   "input": "\"çığ€\\ud83d\\ude00\"",
+   "expected": "\"çığ€😀\"",
+   "sha256": "6e5381c22e3a44f90d5be3d548f4a47e54fa1b0ae3181bd8736793d3cf14cd51",
+   "differs_from_klm_canonical_1": false
+  },
+  {
+   "id": "string-control-escapes",
+   "input": "\"\\u0000\\u0001\\u0002\\u0003\\u0004\\u0005\\u0006\\u0007\\b\\t\\n\\u000b\\f\\r\\u000e\\u000f\\u0010\\u0011\\u0012\\u0013\\u0014\\u0015\\u0016\\u0017\\u0018\\u0019\\u001a\\u001b\\u001c\\u001d\\u001e\\u001f\"",
+   "expected": "\"\\u0000\\u0001\\u0002\\u0003\\u0004\\u0005\\u0006\\u0007\\b\\t\\n\\u000b\\f\\r\\u000e\\u000f\\u0010\\u0011\\u0012\\u0013\\u0014\\u0015\\u0016\\u0017\\u0018\\u0019\\u001a\\u001b\\u001c\\u001d\\u001e\\u001f\"",
+   "sha256": "f144bcffbdbaea0a670956fb0a3edd44ce6bc4dedc77c30cfc14f40034044739",
+   "differs_from_klm_canonical_1": false
+  },
+  {
+   "id": "nested",
+   "input": "{\"z\":[1,[2.0,{\"b\":null,\"a\":true}],{}],\"a\":{\"c\":[],\"b\":false}}",
+   "expected": "{\"a\":{\"b\":false,\"c\":[]},\"z\":[1,[2.0,{\"a\":true,\"b\":null}],{}]}",
+   "sha256": "c1f1e165abb440e9c41b5b86e6be465f23c73f99e12701b68628ec5e28849c0b",
+   "differs_from_klm_canonical_1": true
+  },
+  {
+   "id": "literal-null",
+   "input": "null",
+   "expected": "null",
+   "sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+   "differs_from_klm_canonical_1": false
+  }
+ ]
+}

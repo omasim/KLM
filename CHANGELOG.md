@@ -8,6 +8,51 @@ existing validators; breaking changes bump the major version and ship with a
 migration note.** The specification document carries its own version and
 changes only through the amendment process (see CONTRIBUTING.md).
 
+## v0.3.0 — 2026-09-30 — Specification v0.3
+
+Seventeen accepted amendments. Their origin, evidence and compatibility notes are in
+[`docs/KLM-Amendments-v0.3.md`](docs/KLM-Amendments-v0.3.md). Every amendment came
+from reading the standard's own record of use, and all of that use shares the
+standard's author.
+
+**Compatibility.** No published record changes verdict:
+- Records declaring `klm-attestation/0.1` are graded under the rules they were written against (§8.5).
+- `klm-gamma/1.0` and `klm-label/1.0` are frozen.
+- Envelopes signed before v0.3 verify as legacy.
+- Upgrade verifiers before signers.
+
+**Fixes to the standard itself**
+- **Canonical form (A1, §6.4).** The v0.2 signer hashed Python `json.dumps` output, which writes `1.0` where JavaScript writes `1`. Records with a score of exactly 0 or 1 therefore failed cross-language verification without tampering.
+  - `klm-canonical/1` is RFC 8785 JCS. New envelopes declare it and carry `klm-attestation-envelope/0.2`.
+  - Pre-v0.3 signatures verify as `klm-canonical/0-pyjson`.
+  - Log entries declare their form.
+- **`klm-gamma/1.1` (A2).** Grounded `semantics` and per-component status can now be expressed, as §5 L4 already required. 1.1 also adds optional `attributed_mass`, and vendor signals go under `ext`.
+- **Label ids (A3, §7.5).** `klm-label/1.0` is frozen as published. The grounded-gated projection is `klm-label/2.0`. Labels are recomputed under the stamped id.
+- **Energy/carbon (A11).** Moved from normative text to an informative example.
+
+**New requirements** (records declaring `klm-attestation/0.2`)
+- **Formula ids are exact, and bodies are publishable** (A4). `klm-grounded/1.0` is recomputed; an unregistered formula stops the record before KLM-3.
+- **Every grounded component names its inputs**, as record object ids or an external measurement (A5). Optional composition manifest (A5).
+- **Spans declare their unit** and the digest of the output text (A6).
+- **Silence ≠ contradiction** (A7): `contradicted` needs a `contradicts` edge carrying a separate versioned method.
+- **Numbers cap a lexical support method at `unknown`** (A8).
+- **Freshness is the content's date** (A9).
+- **Invalid ≠ absent** (A10): the `errors` map.
+- **Lifecycle names** (A12): 10 states, plus a `merged_into` edge.
+- **Deletion completeness** (A13).
+- **KLM-5 needs asymmetric signatures and a published key** (A14).
+- **No completeness claim without omission evidence** (A15).
+- **Honest conformance claims** (A16). A level is not correctness. The verdict line now reports honest-null layers.
+
+**Toolchain**
+- New conformance packs: `schema/conformance/canonical/` (127 checks), `gamma/` (72), `attestation-0.2/` (20). `honest-null/` still passes 7/7. Each pack was mutation-tested.
+- New examples:
+  - `attestation-worked-example-0.2.json`. The worked example's "10% discount" claim, which the v0.2 lexical floor had marked `supported`, is held at `unknown`.
+  - `gamma-1.1-*.json`.
+- `docs/EVIDENCE-PACK.md` and `docs/evidence/`: thirteen records, read honestly. KLM-4 is not correctness, and every implementation shares the author.
+
+**Known gap, stated plainly.** The reference implementation's current γ records fail both label versions, as described under A3. It must migrate to `klm-gamma/1.1` + `klm-label/2.0`.
+
 ## v0.2.2 — 2026-09-30 — First packaged v0.2 toolchain
 
 - **PyPI catch-up.** `klm-conformance` on PyPI was still `0.1.0`, so the

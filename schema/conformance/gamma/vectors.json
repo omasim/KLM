@@ -1,0 +1,2938 @@
+{
+ "suite": "klm-gamma conformance vectors (klm-gamma/1.0 frozen, klm-gamma/1.1, klm-label/1.0 frozen, klm-label/2.0)",
+ "version": "0.1",
+ "contract": [
+  "record_cases: every implementation claiming the stamped schema id MUST reach the stated verdict.",
+  "A reject MUST be for the stated reason: each string in error_contains must appear in some reported error.",
+  "Error wording is the reference validator's; a port may word errors differently and should map",
+  "error_contains to its own messages, but the verdict and the rule it names are the contract.",
+  "projection_cases: the pure label projections, evaluated with honest nulls as null (never zero)."
+ ],
+ "record_cases": [
+  {
+   "name": "1.0-example-stable",
+   "rule": "1.0 frozen",
+   "expect": "accept",
+   "file": "../../examples/gamma-stable.json"
+  },
+  {
+   "name": "1.0-example-honest-null-freshness",
+   "rule": "1.0 frozen",
+   "expect": "accept",
+   "file": "../../examples/gamma-honest-null-freshness.json"
+  },
+  {
+   "name": "1.0-example-speculative-overconfident",
+   "rule": "1.0 frozen",
+   "expect": "accept",
+   "file": "../../examples/gamma-speculative-overconfident.json"
+  },
+  {
+   "name": "1.0-invalid-example",
+   "rule": "1.0 frozen",
+   "expect": "reject",
+   "file": "../../examples/invalid/gamma-violations.json",
+   "error_contains": [
+    "epistemic_label 'STALE' not in",
+    "freshness_score is marked unavailable but carries value 0.2",
+    "coherence_score is null but has no nulls.coherence_score.reason",
+    "confidence (deprecated alias) 0.55 != declared_confidence 0.7"
+   ]
+  },
+  {
+   "name": "1.0-documented-case-stamped-stable-is-rejected",
+   "rule": "A3 label 1.0 frozen (declared-gated STABLE)",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.0",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/1.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "!= klm-label/1.0 recomputation PROBABLE"
+   ],
+   "note": "grounded 0.833 / coherence 1.0 / evidence 0.75 / declared 0.488: under the published 1.0 body declared < 0.65, so not STABLE."
+  },
+  {
+   "name": "1.0-documented-case-probable",
+   "rule": "A3 label 1.0 frozen",
+   "expect": "accept",
+   "record": {
+    "schema": "klm-gamma/1.0",
+    "epistemic_label": "PROBABLE",
+    "label_formula": "klm-label/1.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   }
+  },
+  {
+   "name": "1.0-cannot-carry-label-2.0",
+   "rule": "A3 label 2.0 requires klm-gamma/1.1",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.0",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "klm-label/2.0 requires schema klm-gamma/1.1"
+   ]
+  },
+  {
+   "name": "1.0-vendor-label-formula-not-recomputed",
+   "rule": "1.0 frozen (KNOWN GAP pinned, not endorsed)",
+   "expect": "accept",
+   "record": {
+    "schema": "klm-gamma/1.0",
+    "epistemic_label": "STABLE",
+    "label_formula": "vendor-label/3",
+    "evidence_score": 0.5,
+    "freshness_score": 0.5,
+    "coherence_score": 0.5,
+    "declared_confidence": 0.5,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "value": 0.5,
+     "components": {
+      "evidence": 0.5,
+      "coherence": 0.5,
+      "freshness": 0.5
+     }
+    },
+    "confidence_gap": 0.0,
+    "confidence": 0.5,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "heuristic",
+     "grounded_confidence": "measured"
+    }
+   },
+   "note": "The published 1.0 validator does not recompute labels under ids it does not know; frozen as-is. 1.1 closes this (see 1.1-unknown-label-formula)."
+  },
+  {
+   "name": "1.0-top-level-coverage-score-rejected",
+   "rule": "1.0 frozen: vendor extras belong under ext",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.0",
+    "epistemic_label": "PROBABLE",
+    "label_formula": "klm-label/1.0",
+    "evidence_score": 0.42,
+    "freshness_score": null,
+    "coherence_score": 0.55,
+    "declared_confidence": 0.5,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "value": 0.4633,
+     "components": {
+      "evidence": 0.42,
+      "coherence": 0.55
+     }
+    },
+    "confidence_gap": 0.0367,
+    "confidence": 0.5,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    },
+    "coverage_score": 0.8
+   },
+   "error_contains": [
+    "unknown top-level key 'coverage_score'"
+   ]
+  },
+  {
+   "name": "unknown-schema-id",
+   "rule": "A2 never guess the rule set",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/2.0",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "unknown schema id 'klm-gamma/2.0'"
+   ]
+  },
+  {
+   "name": "missing-schema-id",
+   "rule": "A2 never guess the rule set",
+   "expect": "reject",
+   "record": {
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "unknown schema id None"
+   ]
+  },
+  {
+   "name": "1.1-example-stable-label2",
+   "rule": "A2+A3",
+   "expect": "accept",
+   "file": "../../examples/gamma-1.1-stable-label2.json"
+  },
+  {
+   "name": "1.1-example-label1-honest-null",
+   "rule": "A2 (1.0 label on a 1.1 record)",
+   "expect": "accept",
+   "file": "../../examples/gamma-1.1-label1-honest-null.json"
+  },
+  {
+   "name": "1.1-documented-case-label2-stable",
+   "rule": "A3 label 2.0 grounded-gated STABLE",
+   "expect": "accept",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   }
+  },
+  {
+   "name": "1.1-no-grounded-object",
+   "rule": "A2 grounded_confidence stays optional",
+   "expect": "accept",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "PROBABLE",
+    "label_formula": "klm-label/1.0",
+    "evidence_score": 0.5,
+    "freshness_score": 0.5,
+    "coherence_score": 0.5,
+    "declared_confidence": 0.5,
+    "confidence": 0.5,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "heuristic"
+    }
+   }
+  },
+  {
+   "name": "1.1-vendor-formula-support-strength",
+   "rule": "A2 semantics is declared, any of the three",
+   "expect": "accept",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "PROBABLE",
+    "label_formula": "klm-label/1.0",
+    "evidence_score": 0.5,
+    "freshness_score": 0.5,
+    "coherence_score": 0.5,
+    "declared_confidence": 0.5,
+    "grounded_confidence": {
+     "formula": "example-support/0.3",
+     "semantics": "support_strength",
+     "value": 0.44,
+     "components": {
+      "entailment": 0.44
+     },
+     "component_status": {
+      "entailment": {
+       "status": "synthesized",
+       "signal": "support",
+       "ext": {
+        "example_vendor": {
+         "judge": "m1"
+        }
+       }
+      }
+     }
+    },
+    "confidence_gap": 0.06,
+    "confidence": 0.5,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "heuristic",
+     "grounded_confidence": "measured"
+    }
+   }
+  },
+  {
+   "name": "1.1-label2-probable-via-grounded-branch",
+   "rule": "A3 label 2.0 rule 5 (grounded >= 0.55)",
+   "expect": "accept",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "PROBABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.3,
+    "freshness_score": 0.9,
+    "coherence_score": 0.9,
+    "declared_confidence": 0.2,
+    "attributed_mass": 0.3,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.6,
+     "components": {
+      "evidence": 0.3,
+      "coherence": 0.9,
+      "freshness": 0.9
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "heuristic",
+       "signal": "source_age_decay",
+       "formula": "example-age-decay/1.0"
+      }
+     }
+    },
+    "confidence_gap": -0.4,
+    "confidence": 0.2,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "heuristic",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    }
+   }
+  },
+  {
+   "name": "1.1-label2-null-attributed-mass-skips-stable",
+   "rule": "A3 null-skip: STABLE unreachable without attributed_mass",
+   "expect": "accept",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "PROBABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": null,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "unavailable",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     },
+     "attributed_mass": {
+      "reason": "no_attribution_mechanism"
+     }
+    }
+   }
+  },
+  {
+   "name": "1.1-label2-absent-attributed-mass-skips-stable",
+   "rule": "A3 null-skip: absent = not carried",
+   "expect": "accept",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "PROBABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   }
+  },
+  {
+   "name": "1.1-label2-null-coherence-skips-stable-and-contested",
+   "rule": "A3 null-skip: coherence",
+   "expect": "accept",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "PROBABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.9,
+    "freshness_score": 0.9,
+    "coherence_score": null,
+    "declared_confidence": 0.9,
+    "attributed_mass": 0.9,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.9,
+     "components": {
+      "evidence": 0.9,
+      "freshness": 0.9
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "unavailable",
+       "reason": "no_relational_signal"
+      },
+      "freshness": {
+       "status": "heuristic",
+       "signal": "source_age_decay",
+       "formula": "example-age-decay/1.0"
+      }
+     }
+    },
+    "confidence_gap": 0.0,
+    "confidence": 0.9,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "unavailable",
+     "freshness_score": "heuristic",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "coherence_score": {
+      "reason": "no_relational_signal"
+     }
+    }
+   }
+  },
+  {
+   "name": "1.1-label2-null-freshness-skips-outdated",
+   "rule": "A3 null-skip: freshness",
+   "expect": "accept",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.62,
+    "freshness_score": null,
+    "coherence_score": 0.8,
+    "declared_confidence": 0.1,
+    "attributed_mass": 0.66,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.68,
+     "components": {
+      "evidence": 0.62,
+      "coherence": 0.8
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.58,
+    "confidence": 0.1,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   }
+  },
+  {
+   "name": "1.1-vendor-extras-under-ext",
+   "rule": "A2 vendor routing signals go under ext",
+   "expect": "accept",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "PROBABLE",
+    "label_formula": "klm-label/1.0",
+    "evidence_score": 0.42,
+    "freshness_score": null,
+    "coherence_score": 0.55,
+    "declared_confidence": 0.5,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.4633,
+     "components": {
+      "evidence": 0.42,
+      "coherence": 0.55
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": 0.0367,
+    "confidence": 0.5,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    },
+    "ext": {
+     "example_vendor": {
+      "coverage_score": 0.81
+     }
+    }
+   }
+  },
+  {
+   "name": "1.1-semantics-missing",
+   "rule": "A2 semantics REQUIRED (spec §5 L4)",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "semantics is REQUIRED"
+   ]
+  },
+  {
+   "name": "1.1-semantics-unknown-spelling",
+   "rule": "A2 semantics closed set",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence-sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "semantics 'evidence-sufficiency' not in"
+   ],
+   "note": "Hyphenated spelling is not one of the three normative values."
+  },
+  {
+   "name": "1.1-semantics-contradicts-formula",
+   "rule": "A2 a formula id fixes its meaning",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "probability_of_correctness",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "contradicts formula klm-grounded/1.0"
+   ]
+  },
+  {
+   "name": "1.1-component-status-missing",
+   "rule": "A2 component_status REQUIRED",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "component_status is REQUIRED"
+   ]
+  },
+  {
+   "name": "1.1-component-without-status-entry",
+   "rule": "A2 every component has a status entry",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0,
+      "claim_support": 0.8
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "components.claim_support has no component_status entry"
+   ]
+  },
+  {
+   "name": "1.1-unavailable-component-with-value",
+   "rule": "A2 unavailable component carries no value",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "unavailable",
+       "reason": "x"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "component_status.coherence is unavailable but components.coherence carries value"
+   ]
+  },
+  {
+   "name": "1.1-measured-component-without-formula",
+   "rule": "A2 measured names its formula",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "component_status.evidence is measured but names no formula id"
+   ]
+  },
+  {
+   "name": "1.1-unavailable-component-without-reason",
+   "rule": "A2 honest null carries a reason",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "component_status.freshness is unavailable but carries no machine-readable reason"
+   ]
+  },
+  {
+   "name": "1.1-measured-status-but-no-value",
+   "rule": "A2 a not-known component is declared unavailable",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "heuristic",
+       "signal": "source_age_decay",
+       "formula": "f/1"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "component_status.freshness is heuristic but components.freshness has no value"
+   ]
+  },
+  {
+   "name": "1.1-reference-component-silently-absent",
+   "rule": "A2 per-nullable-component entry",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "component_status.freshness missing"
+   ]
+  },
+  {
+   "name": "1.1-valued-component-with-null-reason",
+   "rule": "A2 valued or unavailable, never both",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0",
+       "reason": "x"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "component_status.coherence is measured but carries a null reason"
+   ]
+  },
+  {
+   "name": "1.1-component-status-unknown-key",
+   "rule": "A2 vendor extras under ext",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0",
+       "breakdown": {
+        "claims_total": 3
+       }
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "component_status.evidence has unknown key 'breakdown'"
+   ]
+  },
+  {
+   "name": "1.1-component-without-signal",
+   "rule": "A2 a valued component names what it measures",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "component_status.coherence.signal (what the component measures) is required"
+   ]
+  },
+  {
+   "name": "1.1-attributed-mass-without-status",
+   "rule": "A3 attributed_mass declares its epistemic status",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "attributed_mass requires signal_status.attributed_mass"
+   ]
+  },
+  {
+   "name": "1.1-attributed-mass-null-without-reason",
+   "rule": "honest null (§4.4) extends to attributed_mass",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "PROBABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": null,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "unavailable",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "attributed_mass is null but has no nulls.attributed_mass.reason"
+   ]
+  },
+  {
+   "name": "1.1-attributed-mass-unavailable-with-value",
+   "rule": "no fabrication",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "unavailable",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "attributed_mass is marked unavailable but carries value 0.7"
+   ]
+  },
+  {
+   "name": "1.1-attributed-mass-null-marked-measured",
+   "rule": "a null is 'unavailable'",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "PROBABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": null,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     },
+     "attributed_mass": {
+      "reason": "no_attribution_mechanism"
+     }
+    }
+   },
+   "error_contains": [
+    "attributed_mass is null but signal_status.attributed_mass = 'measured'"
+   ]
+  },
+  {
+   "name": "1.1-attributed-mass-out-of-range",
+   "rule": "domain [0,1]",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 1.3,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "attributed_mass = 1.3 is not a number in [0,1]"
+   ]
+  },
+  {
+   "name": "1.1-top-level-coverage-score-rejected",
+   "rule": "A2 coverage_score is not a neutral field",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    },
+    "coverage_score": 0.8
+   },
+   "error_contains": [
+    "unknown top-level key 'coverage_score'"
+   ]
+  },
+  {
+   "name": "1.1-unknown-label-formula",
+   "rule": "A3 never guess the projection",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/1.1",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "unknown label_formula 'klm-label/1.1'"
+   ]
+  },
+  {
+   "name": "1.1-label2-stable-below-attributed-mass-floor",
+   "rule": "A3 label 2.0 recomputation",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.6,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "!= klm-label/2.0 recomputation PROBABLE"
+   ]
+  },
+  {
+   "name": "1.1-documented-case-stamped-label1-stable",
+   "rule": "A3 divergence: same record, 1.0 id",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/1.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "!= klm-label/1.0 recomputation PROBABLE"
+   ],
+   "note": "Identical signals to 1.1-documented-case-label2-stable; only the stamped id differs."
+  },
+  {
+   "name": "1.1-decisive-but-thin-stable-under-label2",
+   "rule": "A3 divergence: 1.0 STABLE, 2.0 not",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.7,
+    "freshness_score": 0.9,
+    "coherence_score": 0.65,
+    "declared_confidence": 0.9,
+    "attributed_mass": 0.4,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.7375,
+     "components": {
+      "evidence": 0.7,
+      "coherence": 0.65,
+      "freshness": 0.9
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "heuristic",
+       "signal": "source_age_decay",
+       "formula": "example-age-decay/1.0"
+      }
+     }
+    },
+    "confidence_gap": 0.1625,
+    "confidence": 0.9,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "heuristic",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    }
+   },
+   "error_contains": [
+    "!= klm-label/2.0 recomputation PROBABLE"
+   ]
+  },
+  {
+   "name": "1.1-probable-via-grounded-under-label1",
+   "rule": "A3 divergence: rule 5 grounded branch is 2.0-only",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "PROBABLE",
+    "label_formula": "klm-label/1.0",
+    "evidence_score": 0.3,
+    "freshness_score": 0.9,
+    "coherence_score": 0.9,
+    "declared_confidence": 0.2,
+    "attributed_mass": 0.3,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.6,
+     "components": {
+      "evidence": 0.3,
+      "coherence": 0.9,
+      "freshness": 0.9
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "heuristic",
+       "signal": "source_age_decay",
+       "formula": "example-age-decay/1.0"
+      }
+     }
+    },
+    "confidence_gap": -0.4,
+    "confidence": 0.2,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "heuristic",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    }
+   },
+   "error_contains": [
+    "!= klm-label/1.0 recomputation UNCERTAIN"
+   ]
+  },
+  {
+   "name": "1.1-confidence-alias-not-a-number",
+   "rule": "domain of the deprecated alias",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": "0.488",
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "confidence (deprecated alias) '0.488' is not a number"
+   ]
+  },
+  {
+   "name": "1.1-confidence-alias-out-of-range-without-declared",
+   "rule": "1.1 checks the alias domain unconditionally",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "UNCERTAIN",
+    "label_formula": "klm-label/1.0",
+    "evidence_score": 0.5,
+    "freshness_score": 0.5,
+    "coherence_score": 0.5,
+    "confidence": 1.5,
+    "signal_status": {
+     "evidence_score": "measured",
+     "coherence_score": "measured",
+     "freshness_score": "heuristic"
+    }
+   },
+   "error_contains": [
+    "confidence (deprecated alias) 1.5 is not a number in [0,1]"
+   ],
+   "note": "klm-gamma/1.0 never checked the alias when declared_confidence was absent; 1.1 does."
+  },
+  {
+   "name": "1.1-gap-inconsistent",
+   "rule": "gap = declared - grounded (shared vector)",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": 0.1,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "confidence_gap 0.1 != declared - grounded"
+   ]
+  },
+  {
+   "name": "1.1-bool-is-not-a-score",
+   "rule": "bool is not a number (shared vector)",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": true,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "attributed_mass = True is not a number in [0,1]"
+   ]
+  },
+  {
+   "name": "1.1-grounded-without-components",
+   "rule": "grounded keeps its components (shared vector)",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {},
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    }
+   },
+   "error_contains": [
+    "components must be a non-empty object"
+   ]
+  },
+  {
+   "name": "1.1-component-inputs-accepted",
+   "rule": "A5 component inputs (γ shape)",
+   "expect": "accept",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0,
+      "retrieval_relevance": 0.91,
+      "claim_support": 0.8
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0",
+       "inputs": [
+        "ev_1",
+        "ev_2"
+       ]
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      },
+      "retrieval_relevance": {
+       "status": "measured",
+       "signal": "presence",
+       "formula": "example-query-source-similarity/1.0"
+      },
+      "claim_support": {
+       "status": "measured",
+       "signal": "support",
+       "formula": "example-support-lexical/0.1",
+       "ext": {
+        "example_vendor": {
+         "claims_total": 5,
+         "supported": 4
+        }
+       }
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    },
+    "warning": null,
+    "dominant_source": "source/policy-handbook",
+    "provenance_map": {
+     "base": 0.3,
+     "source/policy-handbook": 0.42,
+     "source/policy-faq": 0.28
+    },
+    "ext": {
+     "example_vendor": {
+      "coverage_score": 0.81
+     }
+    }
+   }
+  },
+  {
+   "name": "1.1-component-inputs-empty-rejected",
+   "rule": "A5 component inputs (γ shape)",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0,
+      "retrieval_relevance": 0.91,
+      "claim_support": 0.8
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0",
+       "inputs": []
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      },
+      "retrieval_relevance": {
+       "status": "measured",
+       "signal": "presence",
+       "formula": "example-query-source-similarity/1.0"
+      },
+      "claim_support": {
+       "status": "measured",
+       "signal": "support",
+       "formula": "example-support-lexical/0.1",
+       "ext": {
+        "example_vendor": {
+         "claims_total": 5,
+         "supported": 4
+        }
+       }
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    },
+    "warning": null,
+    "dominant_source": "source/policy-handbook",
+    "provenance_map": {
+     "base": 0.3,
+     "source/policy-handbook": 0.42,
+     "source/policy-faq": 0.28
+    },
+    "ext": {
+     "example_vendor": {
+      "coverage_score": 0.81
+     }
+    }
+   },
+   "error_contains": "inputs must be a non-empty list"
+  },
+  {
+   "name": "1.1-component-inputs-and-external-rejected",
+   "rule": "A5 component inputs (γ shape)",
+   "expect": "reject",
+   "record": {
+    "schema": "klm-gamma/1.1",
+    "epistemic_label": "STABLE",
+    "label_formula": "klm-label/2.0",
+    "evidence_score": 0.75,
+    "freshness_score": null,
+    "coherence_score": 1.0,
+    "declared_confidence": 0.488,
+    "attributed_mass": 0.7,
+    "grounded_confidence": {
+     "formula": "klm-grounded/1.0",
+     "semantics": "evidence_sufficiency",
+     "value": 0.8333,
+     "components": {
+      "evidence": 0.75,
+      "coherence": 1.0,
+      "retrieval_relevance": 0.91,
+      "claim_support": 0.8
+     },
+     "component_status": {
+      "evidence": {
+       "status": "measured",
+       "signal": "attributable_evidence_share",
+       "formula": "example-evidence-share/1.0",
+       "inputs": [
+        "ev_1"
+       ],
+       "external": {
+        "method": "m/1",
+        "status": "measured"
+       }
+      },
+      "coherence": {
+       "status": "measured",
+       "signal": "source_agreement",
+       "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+       "status": "unavailable",
+       "reason": "no_source_age_metadata"
+      },
+      "retrieval_relevance": {
+       "status": "measured",
+       "signal": "presence",
+       "formula": "example-query-source-similarity/1.0"
+      },
+      "claim_support": {
+       "status": "measured",
+       "signal": "support",
+       "formula": "example-support-lexical/0.1",
+       "ext": {
+        "example_vendor": {
+         "claims_total": 5,
+         "supported": 4
+        }
+       }
+      }
+     }
+    },
+    "confidence_gap": -0.3453,
+    "confidence": 0.488,
+    "signal_status": {
+     "evidence_score": "measured",
+     "declared_confidence": "heuristic",
+     "coherence_score": "measured",
+     "freshness_score": "unavailable",
+     "attributed_mass": "measured",
+     "grounded_confidence": "measured"
+    },
+    "nulls": {
+     "freshness_score": {
+      "reason": "no_source_age_metadata"
+     }
+    },
+    "warning": null,
+    "dominant_source": "source/policy-handbook",
+    "provenance_map": {
+     "base": 0.3,
+     "source/policy-handbook": 0.42,
+     "source/policy-faq": 0.28
+    },
+    "ext": {
+     "example_vendor": {
+      "coverage_score": 0.81
+     }
+    }
+   },
+   "error_contains": "pick one"
+  }
+ ],
+ "projection_cases": [
+  {
+   "name": "documented-divergence",
+   "inputs": {
+    "evidence": 0.75,
+    "coherence": 1.0,
+    "freshness": null,
+    "declared": 0.488,
+    "grounded": 0.8333,
+    "attributed_mass": 0.7
+   },
+   "klm-label/1.0": "PROBABLE",
+   "klm-label/2.0": "STABLE",
+   "note": "well-grounded, low router self-report: 1.0 denies STABLE, 2.0 grants it"
+  },
+  {
+   "name": "documented-below-mass-floor",
+   "inputs": {
+    "evidence": 0.75,
+    "coherence": 1.0,
+    "freshness": null,
+    "declared": 0.488,
+    "grounded": 0.8333,
+    "attributed_mass": 0.6
+   },
+   "klm-label/1.0": "PROBABLE",
+   "klm-label/2.0": "PROBABLE"
+  },
+  {
+   "name": "documented-null-mass",
+   "inputs": {
+    "evidence": 0.75,
+    "coherence": 1.0,
+    "freshness": null,
+    "declared": 0.488,
+    "grounded": 0.8333,
+    "attributed_mass": null
+   },
+   "klm-label/1.0": "PROBABLE",
+   "klm-label/2.0": "PROBABLE"
+  },
+  {
+   "name": "decisive-but-thin",
+   "inputs": {
+    "evidence": 0.7,
+    "coherence": 0.65,
+    "freshness": 0.9,
+    "declared": 0.9,
+    "grounded": 0.7375,
+    "attributed_mass": 0.4
+   },
+   "klm-label/1.0": "STABLE",
+   "klm-label/2.0": "PROBABLE",
+   "note": "1.0 grants STABLE on a heuristic self-report; 2.0 does not"
+  },
+  {
+   "name": "grounded-probable-branch",
+   "inputs": {
+    "evidence": 0.3,
+    "coherence": 0.9,
+    "freshness": 0.9,
+    "declared": 0.2,
+    "grounded": 0.6,
+    "attributed_mass": 0.3
+   },
+   "klm-label/1.0": "UNCERTAIN",
+   "klm-label/2.0": "PROBABLE"
+  },
+  {
+   "name": "grounded-probable-boundary-inclusive",
+   "inputs": {
+    "evidence": 0.3,
+    "coherence": 0.9,
+    "freshness": 0.9,
+    "declared": 0.2,
+    "grounded": 0.55,
+    "attributed_mass": 0.3
+   },
+   "klm-label/1.0": "UNCERTAIN",
+   "klm-label/2.0": "PROBABLE"
+  },
+  {
+   "name": "grounded-just-below-probable",
+   "inputs": {
+    "evidence": 0.3,
+    "coherence": 0.9,
+    "freshness": 0.9,
+    "declared": 0.2,
+    "grounded": 0.5499,
+    "attributed_mass": 0.3
+   },
+   "klm-label/1.0": "UNCERTAIN",
+   "klm-label/2.0": "UNCERTAIN"
+  },
+  {
+   "name": "stable-boundaries-inclusive",
+   "inputs": {
+    "evidence": 0.6,
+    "coherence": 0.72,
+    "freshness": 0.9,
+    "declared": 0.5,
+    "grounded": 0.65,
+    "attributed_mass": 0.65
+   },
+   "klm-label/1.0": "PROBABLE",
+   "klm-label/2.0": "STABLE"
+  },
+  {
+   "name": "stable-mass-just-below",
+   "inputs": {
+    "evidence": 0.6,
+    "coherence": 0.72,
+    "freshness": 0.9,
+    "declared": 0.5,
+    "grounded": 0.65,
+    "attributed_mass": 0.6499
+   },
+   "klm-label/1.0": "PROBABLE",
+   "klm-label/2.0": "PROBABLE"
+  },
+  {
+   "name": "stable-coherence-just-below",
+   "inputs": {
+    "evidence": 0.6,
+    "coherence": 0.7199,
+    "freshness": 0.9,
+    "declared": 0.5,
+    "grounded": 0.65,
+    "attributed_mass": 0.9
+   },
+   "klm-label/1.0": "PROBABLE",
+   "klm-label/2.0": "PROBABLE"
+  },
+  {
+   "name": "coherence-null-strong-otherwise",
+   "inputs": {
+    "evidence": 0.9,
+    "coherence": null,
+    "freshness": 0.9,
+    "declared": 0.9,
+    "grounded": 0.9,
+    "attributed_mass": 0.9
+   },
+   "klm-label/1.0": "PROBABLE",
+   "klm-label/2.0": "PROBABLE"
+  },
+  {
+   "name": "grounded-null-strong-otherwise",
+   "inputs": {
+    "evidence": 0.8,
+    "coherence": 0.9,
+    "freshness": 0.9,
+    "declared": 0.5,
+    "grounded": null,
+    "attributed_mass": 0.9
+   },
+   "klm-label/1.0": "PROBABLE",
+   "klm-label/2.0": "PROBABLE"
+  },
+  {
+   "name": "speculative",
+   "inputs": {
+    "evidence": 0.03,
+    "coherence": 0.9,
+    "freshness": 0.9,
+    "declared": 0.9,
+    "grounded": 0.5,
+    "attributed_mass": 0.9
+   },
+   "klm-label/1.0": "SPECULATIVE",
+   "klm-label/2.0": "SPECULATIVE"
+  },
+  {
+   "name": "contested",
+   "inputs": {
+    "evidence": 0.5,
+    "coherence": 0.3,
+    "freshness": 0.9,
+    "declared": 0.9,
+    "grounded": 0.55,
+    "attributed_mass": 0.9
+   },
+   "klm-label/1.0": "CONTESTED",
+   "klm-label/2.0": "CONTESTED"
+  },
+  {
+   "name": "contested-skipped-when-coherence-null",
+   "inputs": {
+    "evidence": 0.5,
+    "coherence": null,
+    "freshness": 0.9,
+    "declared": 0.9,
+    "grounded": 0.6,
+    "attributed_mass": 0.9
+   },
+   "klm-label/1.0": "PROBABLE",
+   "klm-label/2.0": "PROBABLE"
+  },
+  {
+   "name": "outdated",
+   "inputs": {
+    "evidence": 0.9,
+    "coherence": 0.9,
+    "freshness": 0.2,
+    "declared": 0.9,
+    "grounded": 0.75,
+    "attributed_mass": 0.9
+   },
+   "klm-label/1.0": "OUTDATED",
+   "klm-label/2.0": "OUTDATED"
+  },
+  {
+   "name": "outdated-skipped-when-freshness-null",
+   "inputs": {
+    "evidence": 0.9,
+    "coherence": 0.9,
+    "freshness": null,
+    "declared": 0.9,
+    "grounded": 0.9,
+    "attributed_mass": 0.9
+   },
+   "klm-label/1.0": "STABLE",
+   "klm-label/2.0": "STABLE"
+  },
+  {
+   "name": "all-null",
+   "inputs": {
+    "evidence": null,
+    "coherence": null,
+    "freshness": null,
+    "declared": null,
+    "grounded": null,
+    "attributed_mass": null
+   },
+   "klm-label/1.0": "UNCERTAIN",
+   "klm-label/2.0": "UNCERTAIN"
+  }
+ ]
+}

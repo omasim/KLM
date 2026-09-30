@@ -1,101 +1,608 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://nage.ai/klm/schema/klm-gamma/1.0",
-  "title": "KLM Gamma Record",
-  "description": "Normative unified gamma (epistemic vector) shape for KLM-conforming producers. See docs/KLM-Gamma-Unification.md. A null core score MUST have a matching entry in `nulls`; not-known MUST NOT be encoded as zero.",
-  "type": "object",
-  "additionalProperties": false,
-  "required": ["schema", "epistemic_label", "label_formula"],
-  "properties": {
-    "schema": { "const": "klm-gamma/1.0" },
-    "epistemic_label": {
-      "enum": ["STABLE", "PROBABLE", "UNCERTAIN", "CONTESTED", "OUTDATED", "SPECULATIVE"]
+  "$id": "https://nage.ai/klm/schema/klm-gamma",
+  "title": "KLM Gamma Record (klm-gamma/1.0 | klm-gamma/1.1)",
+  "description": "Normative unified gamma (epistemic vector) shape for KLM-conforming producers; see docs/KLM-Gamma-Unification.md. Dispatches on `schema`: klm-gamma/1.0 (frozen as published) or klm-gamma/1.1 (additive superset). Any other id is rejected. A null core score MUST have a matching entry in `nulls`; not-known MUST NOT be encoded as zero.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/gamma_1_0"
     },
-    "label_formula": {
-      "type": "string",
-      "description": "Versioned id of the label decision tree. Reference: klm-label/1.0.",
-      "minLength": 1
+    {
+      "$ref": "#/$defs/gamma_1_1"
+    }
+  ],
+  "if": {
+    "properties": {
+      "schema": {
+        "const": "klm-gamma/1.0"
+      }
     },
-    "evidence_score": { "$ref": "#/$defs/nullableUnit" },
-    "freshness_score": { "$ref": "#/$defs/nullableUnit" },
-    "coherence_score": { "$ref": "#/$defs/nullableUnit" },
-    "declared_confidence": { "$ref": "#/$defs/nullableUnit" },
-    "grounded_confidence": {
-      "type": ["object", "null"],
-      "additionalProperties": false,
-      "required": ["formula", "value", "components"],
-      "properties": {
-        "formula": { "type": "string", "minLength": 1 },
-        "value": { "$ref": "#/$defs/unit" },
-        "components": {
-          "type": "object",
-          "description": "Preserved components (KLM Spec §5 L4 — no collapse). Keys: evidence, coherence, freshness, plus optional extensions.",
-          "additionalProperties": { "$ref": "#/$defs/unit" },
-          "minProperties": 1
+    "required": [
+      "schema"
+    ]
+  },
+  "then": {
+    "properties": {
+      "label_formula": {
+        "not": {
+          "const": "klm-label/2.0"
         }
       }
     },
-    "confidence_gap": {
-      "type": ["number", "null"],
-      "minimum": -1,
-      "maximum": 1,
-      "description": "declared_confidence - grounded_confidence.value. Positive = overconfidence. REQUIRED (non-null) when both sides are present."
-    },
-    "confidence": {
-      "$ref": "#/$defs/nullableUnit",
-      "description": "DEPRECATED alias of declared_confidence (compat until schema 2.0). MUST equal declared_confidence when both present."
-    },
-    "signal_status": {
-      "type": "object",
-      "additionalProperties": { "enum": ["measured", "heuristic", "synthesized", "unavailable"] }
-    },
-    "nulls": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["reason"],
-        "properties": { "reason": { "type": "string", "minLength": 1 } }
-      }
-    },
-    "warning": { "type": ["string", "null"] },
-    "dominant_source": { "type": ["string", "null"] },
-    "source_count": { "type": ["integer", "null"], "minimum": 0 },
-    "provenance_map": {
-      "type": ["object", "null"],
-      "additionalProperties": { "$ref": "#/$defs/unit" }
-    },
-    "tensions": {
-      "type": ["array", "null"],
-      "items": {
-        "type": "object",
-        "required": ["source_a", "source_b"],
-        "properties": {
-          "source_a": { "type": "string" },
-          "source_b": { "type": "string" },
-          "description": { "type": "string" }
-        },
-        "additionalProperties": true
-      }
-    },
-    "audit_ref": {
-      "type": ["object", "null"],
-      "properties": {
-        "audit_id": { "type": "string" },
-        "frame_id": { "type": ["string", "null"] },
-        "signed_by": { "type": ["string", "null"] }
-      },
-      "required": ["audit_id"],
-      "additionalProperties": true
-    },
-    "ext": {
-      "type": "object",
-      "description": "Vendor extensions, namespaced ext.<vendor>.*. Consumers MUST NOT reject unknown keys.",
-      "additionalProperties": true
-    }
+    "$comment": "klm-label/2.0 reads attributed_mass, a 1.1 field: a 1.0 record cannot carry it."
   },
   "$defs": {
-    "unit": { "type": "number", "minimum": 0, "maximum": 1 },
-    "nullableUnit": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+    "unit": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "nullableUnit": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "componentStatus": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "signal"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "measured",
+                "heuristic",
+                "synthesized"
+              ]
+            },
+            "signal": {
+              "type": "string",
+              "minLength": 1,
+              "description": "What the component measures."
+            },
+            "formula": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Versioned formula id; REQUIRED when measured."
+            },
+            "ext": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "inputs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Ids of the record objects this component is computed from (spec v0.3 A5)."
+            },
+            "external": {
+              "type": "object",
+              "required": [
+                "method",
+                "status"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "status": {
+                  "enum": [
+                    "measured",
+                    "heuristic",
+                    "synthesized",
+                    "unavailable"
+                  ]
+                }
+              },
+              "description": "An input measured outside the record (spec v0.3 A5)."
+            }
+          },
+          "if": {
+            "properties": {
+              "status": {
+                "const": "measured"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "formula"
+            ]
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "reason"
+          ],
+          "properties": {
+            "status": {
+              "const": "unavailable"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1
+            },
+            "signal": {
+              "type": "string",
+              "minLength": 1
+            },
+            "formula": {
+              "type": "string",
+              "minLength": 1
+            },
+            "ext": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "inputs": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Ids of the record objects this component is computed from (spec v0.3 A5)."
+            },
+            "external": {
+              "type": "object",
+              "required": [
+                "method",
+                "status"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "method": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "status": {
+                  "enum": [
+                    "measured",
+                    "heuristic",
+                    "synthesized",
+                    "unavailable"
+                  ]
+                }
+              },
+              "description": "An input measured outside the record (spec v0.3 A5)."
+            }
+          }
+        }
+      ]
+    },
+    "gamma_1_0": {
+      "title": "KLM Gamma Record — klm-gamma/1.0 (frozen)",
+      "description": "Normative unified gamma (epistemic vector) shape for KLM-conforming producers. See docs/KLM-Gamma-Unification.md. A null core score MUST have a matching entry in `nulls`; not-known MUST NOT be encoded as zero.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "epistemic_label",
+        "label_formula"
+      ],
+      "properties": {
+        "schema": {
+          "const": "klm-gamma/1.0"
+        },
+        "epistemic_label": {
+          "enum": [
+            "STABLE",
+            "PROBABLE",
+            "UNCERTAIN",
+            "CONTESTED",
+            "OUTDATED",
+            "SPECULATIVE"
+          ]
+        },
+        "label_formula": {
+          "type": "string",
+          "description": "Versioned id of the label decision tree. Reference: klm-label/1.0.",
+          "minLength": 1
+        },
+        "evidence_score": {
+          "$ref": "#/$defs/nullableUnit"
+        },
+        "freshness_score": {
+          "$ref": "#/$defs/nullableUnit"
+        },
+        "coherence_score": {
+          "$ref": "#/$defs/nullableUnit"
+        },
+        "declared_confidence": {
+          "$ref": "#/$defs/nullableUnit"
+        },
+        "grounded_confidence": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "formula",
+            "value",
+            "components"
+          ],
+          "properties": {
+            "formula": {
+              "type": "string",
+              "minLength": 1
+            },
+            "value": {
+              "$ref": "#/$defs/unit"
+            },
+            "components": {
+              "type": "object",
+              "description": "Preserved components (KLM Spec §5 L4 — no collapse). Keys: evidence, coherence, freshness, plus optional extensions.",
+              "additionalProperties": {
+                "$ref": "#/$defs/unit"
+              },
+              "minProperties": 1
+            }
+          }
+        },
+        "confidence_gap": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -1,
+          "maximum": 1,
+          "description": "declared_confidence - grounded_confidence.value. Positive = overconfidence. REQUIRED (non-null) when both sides are present."
+        },
+        "confidence": {
+          "$ref": "#/$defs/nullableUnit",
+          "description": "DEPRECATED alias of declared_confidence (compat until schema 2.0). MUST equal declared_confidence when both present."
+        },
+        "signal_status": {
+          "type": "object",
+          "additionalProperties": {
+            "enum": [
+              "measured",
+              "heuristic",
+              "synthesized",
+              "unavailable"
+            ]
+          }
+        },
+        "nulls": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "reason"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "warning": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dominant_source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "provenance_map": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "$ref": "#/$defs/unit"
+          }
+        },
+        "tensions": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "object",
+            "required": [
+              "source_a",
+              "source_b"
+            ],
+            "properties": {
+              "source_a": {
+                "type": "string"
+              },
+              "source_b": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "audit_ref": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "audit_id": {
+              "type": "string"
+            },
+            "frame_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "signed_by": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "audit_id"
+          ],
+          "additionalProperties": true
+        },
+        "ext": {
+          "type": "object",
+          "description": "Vendor extensions, namespaced ext.<vendor>.*. Consumers MUST NOT reject unknown keys.",
+          "additionalProperties": true
+        }
+      },
+      "$comment": "Verbatim 1.0 body as published (originally $id https://nage.ai/klm/schema/klm-gamma/1.0). Do not edit: change goes into a new schema id."
+    },
+    "gamma_1_1": {
+      "title": "KLM Gamma Record — klm-gamma/1.1",
+      "description": "klm-gamma/1.1 — strict superset of 1.0. Adds grounded_confidence.semantics (REQUIRED, spec §5 L4), grounded_confidence.component_status (per-component epistemic status), the optional attributed_mass signal, and the klm-label/2.0 projection. Cross-field rules (every component has a status entry; an unavailable component carries no value; honest-null pairing; gap arithmetic; label recomputation under the stamped label_formula) are enforced by validate_gamma.py.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "epistemic_label",
+        "label_formula"
+      ],
+      "properties": {
+        "schema": {
+          "const": "klm-gamma/1.1"
+        },
+        "epistemic_label": {
+          "enum": [
+            "STABLE",
+            "PROBABLE",
+            "UNCERTAIN",
+            "CONTESTED",
+            "OUTDATED",
+            "SPECULATIVE"
+          ]
+        },
+        "label_formula": {
+          "enum": [
+            "klm-label/1.0",
+            "klm-label/2.0"
+          ],
+          "description": "Versioned id of the label projection. klm-label/1.0 is frozen as published (declared-gated STABLE); klm-label/2.0 is grounded-gated and reads attributed_mass. The validator recomputes the label under the stamped id; any other id is rejected."
+        },
+        "evidence_score": {
+          "$ref": "#/$defs/nullableUnit"
+        },
+        "freshness_score": {
+          "$ref": "#/$defs/nullableUnit"
+        },
+        "coherence_score": {
+          "$ref": "#/$defs/nullableUnit"
+        },
+        "declared_confidence": {
+          "$ref": "#/$defs/nullableUnit"
+        },
+        "attributed_mass": {
+          "$ref": "#/$defs/nullableUnit",
+          "description": "Share in [0,1] of the answer's contribution mass the implementation attributes to injected, attributable sources rather than the parametric base. Its epistemic status MUST be declared in signal_status.attributed_mass; not-known is null + nulls.attributed_mass.reason, never 0. klm-label/2.0 cannot grant STABLE without it."
+        },
+        "grounded_confidence": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "required": [
+            "formula",
+            "semantics",
+            "value",
+            "components",
+            "component_status"
+          ],
+          "properties": {
+            "formula": {
+              "type": "string",
+              "minLength": 1
+            },
+            "semantics": {
+              "enum": [
+                "probability_of_correctness",
+                "evidence_sufficiency",
+                "support_strength"
+              ],
+              "description": "The declared meaning of value (spec §5 L4). Fixed per formula: klm-grounded/1.0 is evidence_sufficiency."
+            },
+            "value": {
+              "$ref": "#/$defs/unit"
+            },
+            "components": {
+              "type": "object",
+              "description": "Preserved components (KLM Spec §5 L4 — no collapse). Keys: evidence, coherence, freshness, plus optional extensions.",
+              "additionalProperties": {
+                "$ref": "#/$defs/unit"
+              },
+              "minProperties": 1
+            },
+            "component_status": {
+              "type": "object",
+              "minProperties": 1,
+              "description": "One entry per key in components, plus one per component that is an honest null (absent from components). For klm-grounded/1.0 the reference components evidence/coherence/freshness each have an entry.",
+              "additionalProperties": {
+                "$ref": "#/$defs/componentStatus"
+              }
+            }
+          }
+        },
+        "confidence_gap": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -1,
+          "maximum": 1,
+          "description": "declared_confidence - grounded_confidence.value. Positive = overconfidence. REQUIRED (non-null) when both sides are present."
+        },
+        "confidence": {
+          "$ref": "#/$defs/nullableUnit",
+          "description": "DEPRECATED alias of declared_confidence (compat until schema 2.0). MUST equal declared_confidence when both present."
+        },
+        "signal_status": {
+          "type": "object",
+          "additionalProperties": {
+            "enum": [
+              "measured",
+              "heuristic",
+              "synthesized",
+              "unavailable"
+            ]
+          }
+        },
+        "nulls": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "reason"
+            ],
+            "properties": {
+              "reason": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "warning": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "dominant_source": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source_count": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "provenance_map": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "$ref": "#/$defs/unit"
+          }
+        },
+        "tensions": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "object",
+            "required": [
+              "source_a",
+              "source_b"
+            ],
+            "properties": {
+              "source_a": {
+                "type": "string"
+              },
+              "source_b": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "audit_ref": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "audit_id": {
+              "type": "string"
+            },
+            "frame_id": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "signed_by": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "audit_id"
+          ],
+          "additionalProperties": true
+        },
+        "ext": {
+          "type": "object",
+          "description": "Vendor extensions, namespaced ext.<vendor>.* (e.g. vendor routing signals such as a query-coverage score). Consumers MUST NOT reject unknown keys.",
+          "additionalProperties": true
+        }
+      }
+    }
   }
 }

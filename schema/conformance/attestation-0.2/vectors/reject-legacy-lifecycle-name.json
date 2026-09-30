@@ -1,0 +1,303 @@
+{
+ "schema": "klm-attestation/0.2",
+ "inference": {
+  "id": "inf_2026072201",
+  "timestamp": "2026-07-22T21:40:00Z",
+  "model": {
+   "identifier": "nm/fehm",
+   "version": "0.6.0"
+  },
+  "configuration": {
+   "inference_mode": "top_k",
+   "k": 1
+  },
+  "request_scope": {
+   "domain": "airline-policy",
+   "jurisdiction": "CA-BC"
+  },
+  "composition": {
+   "artifacts": [
+    {
+     "name": "model-weights",
+     "digest": null
+    }
+   ],
+   "config_digest": null,
+   "build_id": null
+  }
+ },
+ "knowledge_contributions": [
+  {
+   "id": "ku_policy",
+   "content": "Bereavement fares: 10% discount on eligible routes, requested before travel.",
+   "origin": "injected",
+   "function": "declarative",
+   "source_reference": "docs/bereavement-policy.pdf",
+   "source_class": "authoritative_record",
+   "epistemic_status": "measured",
+   "valid_from": "2024-03-01",
+   "valid_until": null,
+   "version": "2024-03",
+   "lifecycle": "deleted"
+  },
+  {
+   "id": "ku_refund_prior",
+   "content": "Retroactive refund availability (parametric recollection, unverified).",
+   "origin": "parametric",
+   "function": "declarative",
+   "source_reference": null,
+   "source_class": null,
+   "epistemic_status": "heuristic"
+  },
+  {
+   "id": "ku_hedge_rule",
+   "content": "Hedge any span whose claims lack evidence support.",
+   "origin": "injected",
+   "function": "procedural",
+   "source_reference": "policy/hedging-rules",
+   "source_class": "authoritative_record",
+   "epistemic_status": "measured",
+   "version": "v2"
+  }
+ ],
+ "evidence": [
+  {
+   "id": "ev_policy_doc",
+   "source_class": "authoritative_record",
+   "source_reference": "docs/bereavement-policy.pdf",
+   "source_version": "2024-03",
+   "content_hash": "sha256:6b1f0c2a9d",
+   "retrieved_at": "2026-07-22T21:39:58Z",
+   "retrieval_score": 0.91,
+   "content_date": "2024-03-01"
+  },
+  {
+   "id": "ev_prior_summary",
+   "source_class": "prior_summary",
+   "source_reference": "session/2026-07-21#summary",
+   "source_version": null,
+   "content_hash": "sha256:e77a01b3c4",
+   "retrieved_at": "2026-07-22T21:39:58Z",
+   "retrieval_score": 0.44
+  }
+ ],
+ "claims": [
+  {
+   "id": "cl_discount",
+   "text": "Bereavement fares get a 10% discount on eligible routes.",
+   "text_span": {
+    "start": 0,
+    "end": 56
+   },
+   "support_status": "unknown",
+   "support_note": "lexical floor cannot grade a numeric claim (spec v0.3 §5 L1)"
+  },
+  {
+   "id": "cl_before_travel",
+   "text": "They must be requested before travel.",
+   "text_span": {
+    "start": 57,
+    "end": 94
+   },
+   "support_status": "supported"
+  },
+  {
+   "id": "cl_retroactive",
+   "text": "Refunds can also be claimed retroactively after travel.",
+   "text_span": {
+    "start": 95,
+    "end": 150
+   },
+   "support_status": "unsupported"
+  }
+ ],
+ "procedures": [
+  {
+   "id": "pr_hedge",
+   "trigger": "unsupported_claim_present",
+   "trigger_result": true,
+   "activation_status": "activated",
+   "affected_spans": [
+    "sp_2"
+   ]
+  }
+ ],
+ "spans": [
+  {
+   "id": "sp_1",
+   "start": 0,
+   "end": 56
+  },
+  {
+   "id": "sp_3",
+   "start": 57,
+   "end": 94
+  },
+  {
+   "id": "sp_2",
+   "start": 95,
+   "end": 150
+  }
+ ],
+ "metacognition": {
+  "declared_confidence": 0.62,
+  "grounded_confidence": {
+   "formula": "klm-grounded/1.0",
+   "semantics": "evidence_sufficiency",
+   "value": 0.48,
+   "components": {
+    "evidence": 0.5,
+    "freshness": 0.44
+   },
+   "component_status": {
+    "evidence": {
+     "status": "measured",
+     "inputs": [
+      "ev_policy_doc",
+      "ev_prior_summary",
+      "cl_before_travel"
+     ]
+    },
+    "freshness": {
+     "status": "measured",
+     "inputs": [
+      "ev_policy_doc"
+     ]
+    },
+    "coherence": {
+     "status": "unavailable",
+     "reason": "single_authoritative_source_no_agreement_to_measure"
+    }
+   }
+  },
+  "gap": 0.14,
+  "signal_status": {
+   "declared_confidence": "heuristic",
+   "grounded_confidence": "measured"
+  }
+ },
+ "governance": {
+  "engine": {
+   "identifier": "nage-governance-deterministic",
+   "version": "0.1.0"
+  },
+  "policies": [
+   {
+    "id": "pol_eu_ai_act_art13",
+    "version": "2024/1689",
+    "jurisdiction": "EU",
+    "effective_date": "2025-08-01",
+    "source": "OJ L, 2024/1689"
+   }
+  ],
+  "assessments": [
+   {
+    "id": "ga_reg_traceability",
+    "namespace": "regulatory",
+    "policy_id": "pol_eu_ai_act_art13",
+    "policy_version": "2024/1689",
+    "status": "fail",
+    "responsible_object": "cl_retroactive",
+    "evidence": "unsupported claim in customer-facing policy answer",
+    "epistemic_status": "measured"
+   }
+  ]
+ },
+ "gamma": {
+  "schema": "klm-gamma/1.0",
+  "epistemic_label": "PROBABLE",
+  "label_formula": "klm-label/1.0",
+  "evidence_score": 0.42,
+  "freshness_score": null,
+  "coherence_score": 0.55,
+  "declared_confidence": 0.62,
+  "grounded_confidence": {
+   "formula": "klm-grounded/1.0",
+   "value": 0.4633,
+   "components": {
+    "evidence": 0.42,
+    "coherence": 0.55
+   }
+  },
+  "confidence_gap": 0.1567,
+  "confidence": 0.62,
+  "nulls": {
+   "freshness_score": {
+    "reason": "no_varve_age_metadata"
+   }
+  },
+  "dominant_source": "varve/fehm-en",
+  "provenance_map": {
+   "facies": 0.58,
+   "varve/fehm-en": 0.42
+  }
+ },
+ "relations": [
+  {
+   "type": "supports",
+   "from": "ev_policy_doc",
+   "to": "cl_before_travel"
+  },
+  {
+   "type": "expressed_as",
+   "from": "cl_discount",
+   "to": "sp_1"
+  },
+  {
+   "type": "expressed_as",
+   "from": "cl_before_travel",
+   "to": "sp_3"
+  },
+  {
+   "type": "expressed_as",
+   "from": "cl_retroactive",
+   "to": "sp_2"
+  },
+  {
+   "type": "activated",
+   "from": "pr_hedge",
+   "to": "sp_2",
+   "attribution_level": "execution_attribution"
+  },
+  {
+   "type": "assessed_by",
+   "from": "cl_retroactive",
+   "to": "ga_reg_traceability"
+  },
+  {
+   "type": "derived_from",
+   "from": "ku_refund_prior",
+   "to": "record:prior-inference-000"
+  }
+ ],
+ "nulls": {
+  "epsilon": {
+   "reason": "no_power_measurement_available"
+  }
+ },
+ "ext": {
+  "klm_l1": {
+   "retrieval_relevance": 0.91,
+   "claim_support": 0.5,
+   "evidence_coverage": 0.5,
+   "source_authority": 0.75,
+   "source_freshness": 0.44,
+   "formulas": {
+    "claim_support": "klm-support-lexical/0.1",
+    "aggregate": "klm-l1-aggregate/0.1"
+   },
+   "signal_status": {
+    "retrieval_relevance": "measured",
+    "claim_support": "measured",
+    "evidence_coverage": "measured",
+    "source_authority": "heuristic",
+    "source_freshness": "measured"
+   },
+   "nulls": {}
+  }
+ },
+ "output": {
+  "span_unit": "codepoint",
+  "digest": "sha256:e1e295d7ae6d1e9734e5ef44fec1eb7935ce9502ca0b1f89765e0b5809c20f0c"
+ }
+}

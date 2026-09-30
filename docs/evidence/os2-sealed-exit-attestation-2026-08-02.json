@@ -1,0 +1,196 @@
+{
+  "schema": "klm-attestation/0.1",
+  "inference": {
+    "id": "aud_4908e88f0d0c413e8f648438",
+    "timestamp": "2026-08-01T22:08:36Z",
+    "model": {
+      "identifier": "nm/sedim-worker",
+      "version": "0.6.0"
+    }
+  },
+  "knowledge_contributions": [
+    {
+      "id": "ku_parametric",
+      "content": "Archived frame from nm/sedim-worker (0.6.0)",
+      "origin": "parametric",
+      "function": "declarative",
+      "source_reference": null,
+      "source_class": null,
+      "epistemic_status": "measured"
+    }
+  ],
+  "evidence": [],
+  "claims": [],
+  "procedures": [],
+  "spans": [
+    {
+      "id": "sp_out",
+      "start": 0,
+      "end": 0
+    }
+  ],
+  "metacognition": {
+    "declared_confidence": 0.800000011920929,
+    "grounded_confidence": {
+      "formula": "klm-grounded/1.0",
+      "value": 0.824999988079071,
+      "components": {
+        "evidence": 0.8999999761581421,
+        "coherence": 0.699999988079071,
+        "freshness": 0.800000011920929
+      }
+    },
+    "gap": -0.02500000037252903,
+    "signal_status": {
+      "declared_confidence": "heuristic",
+      "grounded_confidence": "measured"
+    }
+  },
+  "governance": {
+    "engine": {
+      "identifier": "nucleus-governance-deterministic",
+      "version": "0.1.0"
+    },
+    "policies": [
+      {
+        "id": "pol_traceability_unsupported",
+        "version": "1.0",
+        "jurisdiction": "EU",
+        "effective_date": "2025-08-01",
+        "source": "EU AI Act (2024/1689) Art. 13 — per-decision traceability"
+      },
+      {
+        "id": "pol_overconfidence_gap",
+        "version": "1.0",
+        "jurisdiction": null,
+        "effective_date": null,
+        "source": "KLM Spec §7.1 — declared/grounded gap discipline"
+      },
+      {
+        "id": "pol_speculative_scope",
+        "version": "1.0",
+        "jurisdiction": null,
+        "effective_date": null,
+        "source": "KLM-Gamma-Unification D1 — SPECULATIVE label semantics"
+      }
+    ],
+    "assessments": [
+      {
+        "id": "ga_0_traceability_unsupported",
+        "namespace": "regulatory",
+        "policy_id": "pol_traceability_unsupported",
+        "policy_version": "1.0",
+        "status": "unknown",
+        "responsible_object": "sp_out",
+        "evidence": "no gradeable claims in an archive record",
+        "epistemic_status": "measured"
+      },
+      {
+        "id": "ga_1_overconfidence_gap",
+        "namespace": "safety",
+        "policy_id": "pol_overconfidence_gap",
+        "policy_version": "1.0",
+        "status": "pass",
+        "responsible_object": "sp_out",
+        "evidence": "confidence_gap=-0.0250 (max +0.3)",
+        "epistemic_status": "measured"
+      },
+      {
+        "id": "ga_2_speculative_scope",
+        "namespace": "scope",
+        "policy_id": "pol_speculative_scope",
+        "policy_version": "1.0",
+        "status": "pass",
+        "responsible_object": "ku_parametric",
+        "evidence": "epistemic_label=STABLE",
+        "epistemic_status": "measured"
+      }
+    ]
+  },
+  "gamma": {
+    "evidence_score": 0.8999999761581421,
+    "freshness_score": 0.800000011920929,
+    "coherence_score": 0.699999988079071,
+    "confidence": 0.800000011920929,
+    "epistemic_label": "STABLE",
+    "schema": "klm-gamma/1.0",
+    "label_formula": "klm-label/1.0",
+    "declared_confidence": 0.800000011920929,
+    "grounded_confidence": {
+      "formula": "klm-grounded/1.0",
+      "value": 0.824999988079071,
+      "components": {
+        "evidence": 0.8999999761581421,
+        "coherence": 0.699999988079071,
+        "freshness": 0.800000011920929
+      }
+    },
+    "confidence_gap": -0.02500000037252903,
+    "signal_status": {
+      "declared_confidence": "heuristic",
+      "grounded_confidence": "measured"
+    }
+  },
+  "relations": [
+    {
+      "type": "assessed_by",
+      "from": "sp_out",
+      "to": "ga_0_traceability_unsupported"
+    },
+    {
+      "type": "assessed_by",
+      "from": "sp_out",
+      "to": "ga_1_overconfidence_gap"
+    },
+    {
+      "type": "assessed_by",
+      "from": "ku_parametric",
+      "to": "ga_2_speculative_scope"
+    }
+  ],
+  "nulls": {
+    "claims": {
+      "reason": "archive_record_has_no_response_text_to_decompose"
+    },
+    "inference.configuration": {
+      "reason": "archive_did_not_capture_config"
+    }
+  },
+  "ext": {
+    "klm_l1": {
+      "retrieval_relevance": null,
+      "claim_support": null,
+      "evidence_coverage": null,
+      "source_authority": null,
+      "source_freshness": null,
+      "formulas": {
+        "claim_support": "klm-support-lexical/0.1",
+        "aggregate": "klm-l1-aggregate/0.1"
+      },
+      "signal_status": {
+        "retrieval_relevance": "unavailable",
+        "claim_support": "unavailable",
+        "evidence_coverage": "unavailable",
+        "source_authority": "unavailable",
+        "source_freshness": "unavailable"
+      },
+      "nulls": {
+        "retrieval_relevance": {
+          "reason": "no_retrieval_in_archive_record"
+        },
+        "claim_support": {
+          "reason": "no_evidence_content_to_score_against"
+        },
+        "evidence_coverage": {
+          "reason": "no_gradeable_claims"
+        },
+        "source_authority": {
+          "reason": "no_classified_sources"
+        },
+        "source_freshness": {
+          "reason": "source_publication_dates_not_available"
+        }
+      }
+    }
+  }
+}

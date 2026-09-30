@@ -1,0 +1,49 @@
+{
+  "schema": "klm-gamma/1.1",
+  "epistemic_label": "STABLE",
+  "label_formula": "klm-label/1.5",
+  "evidence_score": 0.75,
+  "freshness_score": null,
+  "coherence_score": 1.0,
+  "declared_confidence": 0.488,
+  "attributed_mass": 0.7,
+  "grounded_confidence": {
+    "formula": "klm-grounded/1.0",
+    "value": 0.8333,
+    "components": {
+      "evidence": 0.75,
+      "coherence": 1.0,
+      "claim_support": 0.8
+    },
+    "component_status": {
+      "evidence": {
+        "status": "measured",
+        "signal": "attributable_evidence_share"
+      },
+      "coherence": {
+        "status": "unavailable",
+        "reason": "no_relational_signal"
+      },
+      "freshness": {
+        "status": "unavailable",
+        "reason": "no_source_age_metadata"
+      }
+    }
+  },
+  "confidence_gap": -0.3453,
+  "confidence": 0.488,
+  "signal_status": {
+    "evidence_score": "measured",
+    "declared_confidence": "heuristic",
+    "coherence_score": "measured",
+    "freshness_score": "unavailable",
+    "attributed_mass": "measured",
+    "grounded_confidence": "measured"
+  },
+  "nulls": {
+    "freshness_score": {
+      "reason": "no_source_age_metadata"
+    }
+  },
+  "coverage_score": 0.8
+}

@@ -1,0 +1,59 @@
+{
+  "schema": "klm-gamma/1.1",
+  "epistemic_label": "PROBABLE",
+  "label_formula": "klm-label/1.0",
+  "evidence_score": 0.42,
+  "freshness_score": null,
+  "coherence_score": 0.55,
+  "declared_confidence": 0.5,
+  "attributed_mass": null,
+  "grounded_confidence": {
+    "formula": "klm-grounded/1.0",
+    "semantics": "evidence_sufficiency",
+    "value": 0.4633,
+    "components": {
+      "evidence": 0.42,
+      "coherence": 0.55
+    },
+    "component_status": {
+      "evidence": {
+        "status": "measured",
+        "signal": "attributable_evidence_share",
+        "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+        "status": "measured",
+        "signal": "source_agreement",
+        "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+        "status": "unavailable",
+        "reason": "no_source_age_metadata"
+      }
+    }
+  },
+  "confidence_gap": 0.0367,
+  "confidence": 0.5,
+  "signal_status": {
+    "evidence_score": "measured",
+    "declared_confidence": "heuristic",
+    "coherence_score": "measured",
+    "freshness_score": "unavailable",
+    "attributed_mass": "unavailable",
+    "grounded_confidence": "measured"
+  },
+  "nulls": {
+    "freshness_score": {
+      "reason": "no_source_age_metadata"
+    },
+    "attributed_mass": {
+      "reason": "no_attribution_mechanism"
+    }
+  },
+  "warning": "Source freshness unknown; OUTDATED gate skipped. No attribution mechanism; STABLE is not claimed.",
+  "dominant_source": "source/ml-notes",
+  "provenance_map": {
+    "base": 0.41,
+    "source/ml-notes": 0.59
+  }
+}

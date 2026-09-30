@@ -6,4 +6,4 @@ interpreter. In the source repository this package lives in `schema/`;
 it installs as `klm_conformance`.
 """
 
-__version__ = "0.2.2"
+__version__ = "0.3.0"

@@ -1,0 +1,80 @@
+{
+  "schema": "klm-gamma/1.1",
+  "epistemic_label": "STABLE",
+  "label_formula": "klm-label/2.0",
+  "evidence_score": 0.75,
+  "freshness_score": null,
+  "coherence_score": 1.0,
+  "declared_confidence": 0.488,
+  "attributed_mass": 0.7,
+  "grounded_confidence": {
+    "formula": "klm-grounded/1.0",
+    "semantics": "evidence_sufficiency",
+    "value": 0.8333,
+    "components": {
+      "evidence": 0.75,
+      "coherence": 1.0,
+      "retrieval_relevance": 0.91,
+      "claim_support": 0.8
+    },
+    "component_status": {
+      "evidence": {
+        "status": "measured",
+        "signal": "attributable_evidence_share",
+        "formula": "example-evidence-share/1.0"
+      },
+      "coherence": {
+        "status": "measured",
+        "signal": "source_agreement",
+        "formula": "example-source-agreement/1.0"
+      },
+      "freshness": {
+        "status": "unavailable",
+        "reason": "no_source_age_metadata"
+      },
+      "retrieval_relevance": {
+        "status": "measured",
+        "signal": "presence",
+        "formula": "example-query-source-similarity/1.0"
+      },
+      "claim_support": {
+        "status": "measured",
+        "signal": "support",
+        "formula": "example-support-lexical/0.1",
+        "ext": {
+          "example_vendor": {
+            "claims_total": 5,
+            "supported": 4
+          }
+        }
+      }
+    }
+  },
+  "confidence_gap": -0.3453,
+  "confidence": 0.488,
+  "signal_status": {
+    "evidence_score": "measured",
+    "declared_confidence": "heuristic",
+    "coherence_score": "measured",
+    "freshness_score": "unavailable",
+    "attributed_mass": "measured",
+    "grounded_confidence": "measured"
+  },
+  "nulls": {
+    "freshness_score": {
+      "reason": "no_source_age_metadata"
+    }
+  },
+  "warning": null,
+  "dominant_source": "source/policy-handbook",
+  "provenance_map": {
+    "base": 0.3,
+    "source/policy-handbook": 0.42,
+    "source/policy-faq": 0.28
+  },
+  "ext": {
+    "example_vendor": {
+      "coverage_score": 0.81
+    }
+  }
+}

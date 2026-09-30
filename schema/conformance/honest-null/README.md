@@ -11,7 +11,9 @@ The amendment splits into two layers, and so does this pack.
 ## Level 1 — record-level rules (executable here)
 
 Two rules, signal-agnostic — they guard γ (`coherence_score`,
-`freshness_score`) and ε (`carbon_g`, `carbon_intensity_g_per_kwh`) alike:
+`freshness_score`) and, as an informative example since spec v0.3 (A11), an
+implementation's energy/carbon signals (`carbon_g`,
+`carbon_intensity_g_per_kwh`) alike:
 
 - **Rule 3a** — a nullable signal MUST NOT carry a value AND a `nulls` entry
   for the same signal (hiding a real value behind a not-known claim).

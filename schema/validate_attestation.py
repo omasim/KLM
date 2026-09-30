@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""KLM attestation-record validator — reference implementation, klm-attestation/0.1.
+"""KLM attestation-record validator — reference implementation, klm-attestation/0.1 and /0.2.
+
+A record is graded under the rules of the schema version it declares (spec
+§4.3, v0.3 "formula ids are exact"): `klm-attestation/0.1` records keep the
+v0.2-spec rules byte-for-byte; `klm-attestation/0.2` records additionally
+carry the v0.3 requirements (declared span unit + output digest, grounded
+component inputs, replayable grounded formula, contradiction as a separate
+signal, invalid ≠ absent, lifecycle names, deletion-scope consistency).
 
 Stdlib-only. Enforces the structural contract of klm-attestation.schema.json
 plus the semantic rules JSON Schema cannot express, and renders a KLM-0
@@ -23,12 +30,15 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from validate_gamma import validate as validate_gamma_record  # noqa: E402
 
-SCHEMA_ID = "klm-attestation/0.1"
+SCHEMA_ID = "klm-attestation/0.1"          # legacy id (spec v0.1/v0.2)
+SCHEMA_ID_02 = "klm-attestation/0.2"       # spec v0.3
+SCHEMA_IDS = (SCHEMA_ID, SCHEMA_ID_02)
 STATUSES = {"measured", "heuristic", "synthesized", "unavailable"}
 SOURCE_CLASSES = {
     "authoritative_record", "external_volatile", "user_assertion",
@@ -40,14 +50,41 @@ GOV_NAMESPACES = {"safety", "privacy", "regulatory", "authorization", "audience"
 GOV_STATUSES = {"pass", "fail", "unknown", "not_applicable"}
 LIFECYCLES = {"draft", "active", "disputed", "superseded", "expired",
               "revoked", "deleted", "legally_retained"}
+# §10.1 (v0.3): 7 operational + 3 compliance states; old names map
+# draft→seed, disputed→contested, superseded→merged, deleted→forgotten.
+LIFECYCLES_02 = {"seed", "active", "volatile", "contested", "archived", "merged", "forgotten",
+                 "expired", "revoked", "legally_retained"}
 EDGE_TYPES = {"supports", "expressed_as", "activated", "assessed_by",
               "derived_from", "supersedes"}
+EDGE_TYPES_02 = EDGE_TYPES | {"contradicts", "merged_into"}
+SPAN_UNITS = {"utf16", "codepoint", "utf8_byte"}
+DELETION_STATUSES = {"deleted", "retained_due_to_legal_hold", "not_applicable",
+                     "pending", "failed", "unknown"}
+DELETION_SETTLED = {"deleted", "retained_due_to_legal_hold", "not_applicable"}
 ATTRIBUTION_LEVELS = {"behavioral_association", "execution_attribution", "causal_contribution"}
 EPS = 1e-6
 
 
 def _is_unit(v) -> bool:
     return isinstance(v, (int, float)) and not isinstance(v, bool) and 0.0 <= v <= 1.0
+
+
+def _grounded_v1(components: dict) -> float | None:
+    """klm-grounded/1.0: 0.50·evidence + 0.25·coherence + 0.25·freshness,
+    weights renormalized over the components present (honest nulls drop out)."""
+    weights = {"evidence": 0.50, "coherence": 0.25, "freshness": 0.25}
+    present = {k: v for k, v in components.items() if k in weights and _is_unit(v)}
+    if not present or set(components) - set(weights):
+        return None
+    total = sum(weights[k] for k in present)
+    return sum(weights[k] * v for k, v in present.items()) / total
+
+
+# Grounded-confidence formulas this verifier can recompute (spec §4.3, v0.3):
+# a record is replayed under the id it stamps; an id not listed here is
+# reported as not reproducible — never re-scored under another formula.
+GROUNDED_FORMULAS = {"klm-grounded/1.0": _grounded_v1}
+DIGEST = re.compile(r"^sha256:[0-9a-f]{64}$")
 
 
 def _req_str(obj: dict, key: str, where: str, errs: list[str]) -> str | None:
@@ -63,8 +100,11 @@ def validate(record: dict) -> list[str]:
     e = errs.append
     if not isinstance(record, dict):
         return ["record is not a JSON object"]
-    if record.get("schema") != SCHEMA_ID:
-        e(f"schema must be '{SCHEMA_ID}' (got {record.get('schema')!r})")
+    if record.get("schema") not in SCHEMA_IDS:
+        e(f"schema must be one of {list(SCHEMA_IDS)} (got {record.get('schema')!r})")
+    v2 = record.get("schema") == SCHEMA_ID_02
+    lifecycles = LIFECYCLES_02 if v2 else LIFECYCLES
+    edge_types = EDGE_TYPES_02 if v2 else EDGE_TYPES
 
     # ── §6.1 inference block ──
     inf = record.get("inference")
@@ -169,7 +209,7 @@ def validate(record: dict) -> list[str]:
             if sc not in SOURCE_CLASSES:
                 e(f"{w}.source_class must be a §2.5 class for injected origin")
         lc = ku.get("lifecycle")
-        if lc is not None and lc not in LIFECYCLES:
+        if lc is not None and lc not in lifecycles:
             e(f"{w}.lifecycle '{lc}' not a §10.1 state")
 
     # ── evidence (§2.3) ──
@@ -294,7 +334,7 @@ def validate(record: dict) -> list[str]:
                 e(f"relations[{i}] must be an object")
                 continue
             etype = edge.get("type")
-            if etype not in EDGE_TYPES and not (isinstance(etype, str) and ":" in etype):
+            if etype not in edge_types and not (isinstance(etype, str) and ":" in etype):
                 e(f"relations[{i}].type '{etype}' is neither a §6.2 type nor namespaced (vendor:type)")
             for endpoint in ("from", "to"):
                 ref = edge.get(endpoint)
@@ -310,6 +350,14 @@ def validate(record: dict) -> list[str]:
                     e(f"relations[{i}]: supports must run evidence → claim")
             if etype == "expressed_as" and ids.get(edge.get("to", "")) != "spans":
                 e(f"relations[{i}]: expressed_as must target a span id")
+            if v2 and etype == "contradicts":
+                if ids.get(edge.get("from")) != "evidence" or ids.get(edge.get("to")) != "claims":
+                    e(f"relations[{i}]: contradicts must run evidence → claim")
+                if not isinstance(edge.get("method"), str) or not edge.get("method"):
+                    e(f"relations[{i}]: contradicts must name its versioned detection method (§2.2)")
+
+    if v2:
+        _validate_v02(record, ids, nulls, errs)
 
     # ── embedded gamma ──
     gamma = record.get("gamma")
@@ -318,6 +366,123 @@ def validate(record: dict) -> list[str]:
             e(f"gamma: {gerr}")
 
     return errs
+
+
+def _validate_v02(record: dict, ids: dict, nulls: dict, errs: list[str]) -> None:
+    """klm-attestation/0.2 structural rules (spec v0.3)."""
+    e = errs.append
+
+    # §2.6 — spans declare their unit and the text they index.
+    if record.get("claims") or record.get("spans"):
+        out = record.get("output")
+        if not isinstance(out, dict):
+            e("output {span_unit, digest} is required when claims or spans exist (§2.6)")
+        else:
+            if out.get("span_unit") not in SPAN_UNITS:
+                e(f"output.span_unit must be one of {sorted(SPAN_UNITS)} (§2.6)")
+            if not (isinstance(out.get("digest"), str) and DIGEST.match(out["digest"])):
+                e("output.digest must be 'sha256:<64 hex>' of the UTF-8 output text (§2.6)")
+
+    # §4.5(4) — invalid is not absent: an `errors` entry names a signal that
+    # was present but rejected; it is never also an honest null.
+    errors = record.get("errors", {})
+    if not isinstance(errors, dict):
+        e("errors must be an object")
+    else:
+        for sig, entry in errors.items():
+            if not (isinstance(entry, dict) and isinstance(entry.get("reason"), str) and entry["reason"]):
+                e(f"errors.{sig} must carry a non-empty reason")
+            if sig in nulls:
+                e(f"{sig} is both invalid (errors) and not-known (nulls) — pick one (§4.5)")
+
+    # §5 L4 — composition manifest (SHOULD): when present, every key is
+    # present and each value is a digest or an explicit null.
+    comp = (record.get("inference") or {}).get("composition")
+    if comp is not None:
+        if not isinstance(comp, dict):
+            e("inference.composition must be an object")
+        else:
+            for k in ("artifacts", "config_digest", "build_id"):
+                if k not in comp:
+                    e(f"inference.composition.{k} must be present (null when unknown)")
+            arts = comp.get("artifacts")
+            if arts is not None and not isinstance(arts, list):
+                e("inference.composition.artifacts must be an array or null")
+            for j, a in enumerate(arts or []):
+                if not (isinstance(a, dict) and isinstance(a.get("name"), str) and a.get("name")
+                        and "digest" in a and (a["digest"] is None or (isinstance(a["digest"], str)
+                                                                         and DIGEST.match(a["digest"])))):
+                    e(f"inference.composition.artifacts[{j}] must be {{name, digest: 'sha256:…' | null}}")
+            cd = comp.get("config_digest")
+            if cd is not None and not (isinstance(cd, str) and DIGEST.match(cd)):
+                e("inference.composition.config_digest must be 'sha256:…' or null")
+
+    # §10.2 — a deletion is complete only if every scope is settled.
+    ds = record.get("deletion_scope")
+    if ds is not None:
+        if not isinstance(ds, dict):
+            e("deletion_scope must be an object")
+        else:
+            statuses = {k: v for k, v in ds.items() if k not in ("overall", "locations_discovered")
+                        and not isinstance(v, dict)}
+            for k, v in statuses.items():
+                if v not in DELETION_STATUSES:
+                    e(f"deletion_scope.{k} = {v!r} not one of {sorted(DELETION_STATUSES)}")
+            if ds.get("overall") == "complete":
+                open_ = [k for k, v in statuses.items() if v not in DELETION_SETTLED]
+                if open_:
+                    e(f"deletion_scope.overall is 'complete' but {open_} are not settled (§10.2)")
+                if ds.get("locations_discovered") is not True:
+                    e("deletion_scope.overall is 'complete' without locations_discovered: true (§10.2)")
+
+    # §5 L4 + §4.3 — every grounded component names its inputs; the value
+    # replays under the stamped formula when this verifier knows it.
+    meta = record.get("metacognition")
+    g = meta.get("grounded_confidence") if isinstance(meta, dict) else None
+    if isinstance(g, dict):
+        comps = g.get("components") if isinstance(g.get("components"), dict) else {}
+        cst = g.get("component_status")
+        if not isinstance(cst, dict):
+            e("metacognition.grounded_confidence.component_status is required (§5 L4)")
+            cst = {}
+        for k in comps:
+            ent = cst.get(k)
+            w = f"metacognition.grounded_confidence.component_status.{k}"
+            if not isinstance(ent, dict):
+                e(f"{w} is missing — every component must declare its inputs (§5 L4)")
+                continue
+            if ent.get("status") not in STATUSES:
+                e(f"{w}.status must be one of {sorted(STATUSES)}")
+            has_in, has_ext = "inputs" in ent, "external" in ent
+            if has_in == has_ext:
+                e(f"{w} must carry exactly one of inputs (record object ids) or external {{method, status}}")
+            elif has_in:
+                refs = ent.get("inputs")
+                if not (isinstance(refs, list) and refs):
+                    e(f"{w}.inputs must be a non-empty list of object ids in this record — "
+                      f"a component computed from nothing in the record is not replayable")
+                else:
+                    for r in refs:
+                        if r not in ids:
+                            e(f"{w}.inputs references unknown object '{r}'")
+            else:
+                ext = ent.get("external")
+                if not (isinstance(ext, dict) and isinstance(ext.get("method"), str) and ext.get("method")
+                        and ext.get("status") in STATUSES):
+                    e(f"{w}.external must be {{method: <versioned id>, status}}")
+                elif ent.get("status") == "measured" and ext.get("status") != "measured":
+                    e(f"{w}: reported measured but its external input is {ext.get('status')} (§4.2)")
+        for k, ent in cst.items():
+            if isinstance(ent, dict) and ent.get("status") == "unavailable" and k in comps:
+                e(f"metacognition.grounded_confidence.{k} is unavailable yet carries a value (§4.4)")
+        fn = GROUNDED_FORMULAS.get(g.get("formula"))
+        if fn is not None and comps and _is_unit(g.get("value")):
+            want = fn(comps)
+            if want is None:
+                e(f"metacognition.grounded_confidence: components do not fit {g.get('formula')}")
+            elif abs(want - g["value"]) > 1e-4:
+                e(f"metacognition.grounded_confidence.value {g['value']} does not replay under "
+                  f"{g.get('formula')} (recomputed {want:.4f}) (§4.3)")
 
 
 def validate_level1(record: dict) -> list[str]:
@@ -409,6 +574,38 @@ def validate_level2(record: dict) -> list[str]:
             e(f"KLM-2: supports edge lands on claim[{cid}] whose status is "
               f"'{claim_status.get(cid)}' — presence is not support")
 
+    if record.get("schema") == SCHEMA_ID_02:
+        rels = [r for r in record.get("relations", []) if isinstance(r, dict)]
+        cs_formula = (l1.get("formulas") or {}).get("claim_support") if isinstance(l1, dict) else None
+        contra = {}
+        for r in rels:
+            if r.get("type") == "contradicts":
+                contra.setdefault(r.get("to"), []).append(r)
+        for c in claims:
+            cid, st = c.get("id"), c.get("support_status")
+            # §2.2 (v0.3): silence is not contradiction — a separate signal.
+            if st == "contradicted":
+                if cid not in contra:
+                    e(f"KLM-2: claim[{cid}] is 'contradicted' without a contradicts edge (§2.2)")
+                for r in contra.get(cid, []):
+                    if cs_formula and r.get("method") == cs_formula:
+                        e(f"KLM-2: claim[{cid}] contradiction comes from the support formula "
+                          f"'{cs_formula}' itself — it must be a separate signal (§2.2)")
+                if cid in supports_to:
+                    e(f"KLM-2: supports edge lands on contradicted claim[{cid}] — use contradicts (§6.2)")
+            elif cid in contra:
+                e(f"KLM-2: contradicts edge on claim[{cid}] whose status is '{st}'")
+            # §5 L1 (v0.3): a purely lexical support formula cannot mark a
+            # claim carrying numbers as supported.
+            if (st == "supported" and isinstance(cs_formula, str) and "lexical" in cs_formula
+                    and re.search(r"\d", str(c.get("text") or ""))):
+                e(f"KLM-2: claim[{cid}] has numbers and is 'supported' by a lexical formula "
+                  f"('{cs_formula}') — the ceiling is 'unknown' (§5 L1)")
+        # §5 L1 (v0.3): freshness is the content's date, not ingestion age.
+        if isinstance(l1, dict) and l1.get("source_freshness") is not None:
+            if not any(isinstance(ev, dict) and ev.get("content_date") for ev in record.get("evidence", [])):
+                e("KLM-2: ext.klm_l1.source_freshness is set but no evidence carries a content_date (§5 L1)")
+
     # Procedure→execution links: an activated procedure must have an
     # activated edge (execution attribution floor).
     activated_from = {edge.get("from") for edge in record.get("relations", [])
@@ -441,6 +638,10 @@ def validate_level3(record: dict) -> list[str]:
             e("KLM-3: metacognition.grounded_confidence (with components) is required")
         if meta.get("gap") is None and meta.get("declared_confidence") is not None:
             e("KLM-3: metacognition.gap missing")
+        if (record.get("schema") == SCHEMA_ID_02 and isinstance(grounded, dict)
+                and grounded.get("formula") not in GROUNDED_FORMULAS):
+            e(f"KLM-3: grounded formula {grounded.get('formula')!r} is not recomputable by this "
+              f"verifier — publish its body so a third party can replay it (§4.3, §8.4)")
 
     # L5 — governance with reflective independence + policy provenance.
     gov = record.get("governance")
@@ -538,6 +739,21 @@ def validate_level4(record: dict) -> list[str]:
     return errs
 
 
+def grade(record: dict) -> tuple[int, list[str]]:
+    """Highest level an (unsigned) record reaches, and the gaps that stop the
+    next one. Level -1 = not KLM-0 conformant."""
+    errs0 = validate(record)
+    if errs0:
+        return -1, errs0
+    errs1 = validate_level1(record)
+    errs2 = validate_level2(record) if not errs1 else None
+    errs3 = validate_level3(record) if (errs1 == [] and errs2 == []) else None
+    errs4 = validate_level4(record) if errs3 == [] else None
+    reached = 0 if errs1 else (1 if errs2 else (2 if errs3 else (3 if errs4 else 4)))
+    gaps = errs1 if errs1 else (errs2 if errs2 else (errs3 if errs3 else (errs4 or [])))
+    return reached, gaps
+
+
 def main(argv: list[str]) -> int:
     target_level = 1
     paths: list[str] = []
@@ -566,7 +782,8 @@ def main(argv: list[str]) -> int:
         # Signed envelope → verify signature first (KLM-5 surface), then
         # ladder the enclosed record.
         signature_ok = None
-        if isinstance(record, dict) and record.get("schema") == "klm-attestation-envelope/0.1":
+        if isinstance(record, dict) and record.get("schema") in ("klm-attestation-envelope/0.1",
+                                                                "klm-attestation-envelope/0.2"):
             from sign_attestation import verify_envelope
             sig_errs = verify_envelope(record)
             if sig_errs:
@@ -598,6 +815,9 @@ def main(argv: list[str]) -> int:
         n = record
         stats = (f"[{len(n.get('claims', []))} claims, {len(n.get('evidence', []))} evidence, "
                  f"{len(n.get('procedures', []))} procedures, {len(n.get('relations', []))} edges]")
+        if not n.get("claims") and "claims" in (n.get("nulls") or {}) and reached >= 2:
+            stats += " (claims: honest-null — claim↔evidence tests not exercised)"
+        stats += f" [{n.get('schema')}]"
         if reached >= target_level:
             print(f"PASS  {path} — {names[reached]} {stats}")
         else:

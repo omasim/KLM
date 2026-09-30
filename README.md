@@ -20,9 +20,12 @@ attestation**.
 |---|---|
 | [KLM-Manifesto.md](KLM-Manifesto.md) | The thesis, in nine commitments |
 | [KLM-White-Paper.md](KLM-White-Paper.md) | The argument, the layer model, a worked example (v0.3) |
-| [KLM-Specification.md](KLM-Specification.md) | Normative conformance detail, RFC-2119 (v0.1) |
-| [docs/KLM-Gamma-Unification.md](docs/KLM-Gamma-Unification.md) | Normative γ schema decisions (klm-gamma/1.0) |
-| [docs/KLM-Amendment-Attested-Parametric.md](docs/KLM-Amendment-Attested-Parametric.md) | Draft amendment: mechanical parametric attribution |
+| [KLM-Specification.md](KLM-Specification.md) | Normative conformance detail, RFC-2119 (v0.3) |
+| [docs/KLM-Amendments-v0.3.md](docs/KLM-Amendments-v0.3.md) | The v0.3 amendment set: what changed, why, and on what evidence |
+| [docs/KLM-Gamma-Unification.md](docs/KLM-Gamma-Unification.md) | Normative γ decisions: `klm-gamma/1.0`–`1.1`, label projections `klm-label/1.0` (frozen) and `2.0` |
+| [docs/KLM-Amendment-Attested-Parametric.md](docs/KLM-Amendment-Attested-Parametric.md) | Accepted amendment (v0.2): mechanical parametric attribution |
+| [docs/KLM-Amendment-Honest-Null-Boundaries.md](docs/KLM-Amendment-Honest-Null-Boundaries.md) | Accepted amendment (v0.2): honest nulls across serialization boundaries |
+| [docs/EVIDENCE-PACK.md](docs/EVIDENCE-PACK.md) | What the standard caught in its author's own stack — and what it did not |
 | [docs/QUICKSTART.md](docs/QUICKSTART.md) | Five minutes: validate, try to cheat, sign, chain, disclose |
 | [docs/FAQ.md](docs/FAQ.md) | What KLM is and deliberately is not |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Amendment process + implementation reports (the gap we most want filled) |

@@ -1,0 +1,209 @@
+{
+  "schema": "klm-attestation/0.1",
+  "inference": {
+    "id": "mag_e",
+    "timestamp": "2024-10-27T03:33:20Z",
+    "model": {
+      "identifier": "nm/fehm",
+      "version": "0.6.0"
+    }
+  },
+  "knowledge_contributions": [
+    {
+      "id": "ku_parametric",
+      "content": "Forward pass by nm/fehm (0.6.0)",
+      "origin": "parametric",
+      "function": "declarative",
+      "source_reference": null,
+      "source_class": null,
+      "epistemic_status": "measured"
+    }
+  ],
+  "evidence": [],
+  "claims": [],
+  "procedures": [],
+  "spans": [
+    {
+      "id": "sp_out",
+      "start": 0,
+      "end": 0
+    }
+  ],
+  "metacognition": {
+    "declared_confidence": 0.910134,
+    "grounded_confidence": {
+      "formula": "klm-grounded/1.0",
+      "value": 0.570057,
+      "components": {
+        "evidence": 0.84316,
+        "coherence": 0.517297,
+        "freshness": 0.076611
+      }
+    },
+    "gap": 0.340077,
+    "signal_status": {
+      "declared_confidence": "synthesized",
+      "grounded_confidence": "synthesized"
+    }
+  },
+  "governance": {
+    "engine": {
+      "identifier": "magma-governance-deterministic",
+      "version": "0.1.0"
+    },
+    "policies": [
+      {
+        "id": "pol_traceability_unsupported",
+        "version": "1.0",
+        "jurisdiction": "EU",
+        "effective_date": "2025-08-01",
+        "source": "EU AI Act (2024/1689) Art. 13 \u2014 per-decision traceability"
+      },
+      {
+        "id": "pol_overconfidence_gap",
+        "version": "1.0",
+        "jurisdiction": null,
+        "effective_date": null,
+        "source": "KLM Spec \u00a77.1 \u2014 declared/grounded gap discipline"
+      },
+      {
+        "id": "pol_speculative_scope",
+        "version": "1.0",
+        "jurisdiction": null,
+        "effective_date": null,
+        "source": "KLM-Gamma-Unification D1 \u2014 SPECULATIVE label semantics"
+      }
+    ],
+    "assessments": [
+      {
+        "id": "ga_0_traceability_unsupported",
+        "namespace": "regulatory",
+        "policy_id": "pol_traceability_unsupported",
+        "policy_version": "1.0",
+        "status": "unknown",
+        "responsible_object": "sp_out",
+        "evidence": "an embedding forward pass has no gradeable textual claim",
+        "epistemic_status": "measured"
+      },
+      {
+        "id": "ga_1_overconfidence_gap",
+        "namespace": "safety",
+        "policy_id": "pol_overconfidence_gap",
+        "policy_version": "1.0",
+        "status": "fail",
+        "responsible_object": "sp_out",
+        "evidence": "confidence_gap=0.3401 (max +0.3)",
+        "epistemic_status": "measured"
+      },
+      {
+        "id": "ga_2_speculative_scope",
+        "namespace": "scope",
+        "policy_id": "pol_speculative_scope",
+        "policy_version": "1.0",
+        "status": "pass",
+        "responsible_object": "ku_parametric",
+        "evidence": "epistemic_label=OUTDATED",
+        "epistemic_status": "measured"
+      }
+    ]
+  },
+  "gamma": {
+    "schema": "klm-gamma/1.0",
+    "label_formula": "klm-label/1.0",
+    "evidence_score": 0.84316,
+    "freshness_score": 0.076611,
+    "coherence_score": 0.517297,
+    "declared_confidence": 0.910134,
+    "grounded_confidence": {
+      "formula": "klm-grounded/1.0",
+      "value": 0.570057,
+      "components": {
+        "evidence": 0.84316,
+        "coherence": 0.517297,
+        "freshness": 0.076611
+      }
+    },
+    "confidence_gap": 0.340077,
+    "confidence": 0.910134,
+    "signal_status": {
+      "evidence_score": "synthesized",
+      "coherence_score": "synthesized",
+      "freshness_score": "synthesized",
+      "declared_confidence": "synthesized",
+      "grounded_confidence": "synthesized"
+    },
+    "epistemic_label": "OUTDATED",
+    "warning": "Deterministic stub fixture \u2014 synthesized signals"
+  },
+  "relations": [
+    {
+      "type": "assessed_by",
+      "from": "sp_out",
+      "to": "ga_0_traceability_unsupported"
+    },
+    {
+      "type": "assessed_by",
+      "from": "sp_out",
+      "to": "ga_1_overconfidence_gap"
+    },
+    {
+      "type": "assessed_by",
+      "from": "ku_parametric",
+      "to": "ga_2_speculative_scope"
+    }
+  ],
+  "nulls": {
+    "claims": {
+      "reason": "forward_pass_emits_an_embedding_not_decomposable_response_text"
+    },
+    "inference.configuration": {
+      "reason": "stub_forward_captures_no_runtime_config"
+    }
+  },
+  "ext": {
+    "klm_l1": {
+      "retrieval_relevance": null,
+      "claim_support": null,
+      "evidence_coverage": null,
+      "source_authority": null,
+      "source_freshness": null,
+      "formulas": {
+        "claim_support": "klm-support-lexical/0.1",
+        "aggregate": "klm-l1-aggregate/0.1"
+      },
+      "signal_status": {
+        "retrieval_relevance": "unavailable",
+        "claim_support": "unavailable",
+        "evidence_coverage": "unavailable",
+        "source_authority": "unavailable",
+        "source_freshness": "unavailable"
+      },
+      "nulls": {
+        "retrieval_relevance": {
+          "reason": "no_retrieval_in_a_forward_pass"
+        },
+        "claim_support": {
+          "reason": "no_evidence_content_to_score_against"
+        },
+        "evidence_coverage": {
+          "reason": "no_gradeable_claims"
+        },
+        "source_authority": {
+          "reason": "no_classified_sources"
+        },
+        "source_freshness": {
+          "reason": "source_publication_dates_not_available"
+        }
+      }
+    },
+    "epsilon": {
+      "energy_wh": 0.222222,
+      "carbon_g": 0.024444,
+      "carbon_intensity_g_per_kwh": 110.0,
+      "region": "eu-west",
+      "intensity_source": "ENTSO-E 2024 average",
+      "compute_seconds": 2.0,
+      "nulls": {}
+    }
+  }
+}

@@ -1,8 +1,8 @@
 # KLM γ Unification — Normative Schema Decision
 
-**Version:** 1.0 (proposal)
+**Version:** 1.1 (proposal) — 2026-09-30 adds D7 (`klm-gamma/1.1`) and D8 (`klm-label/1.0` frozen, `klm-label/2.0` published). D1–D6 are unchanged.
 **Status:** Working draft for ratification. Once accepted, this document governs the γ surface of every Nage component and becomes an annex to the KLM Specification (§5 L4, §14 open item "normative JSON Schema").
-**Machine-readable schema:** [`schema/klm-gamma.schema.json`](../schema/klm-gamma.schema.json) · **Reference validator:** [`schema/validate_gamma.py`](../schema/validate_gamma.py)
+**Machine-readable schema:** [`schema/klm-gamma.schema.json`](../schema/klm-gamma.schema.json) (`klm-gamma/1.0` frozen + `klm-gamma/1.1`) · **Reference validator:** [`schema/validate_gamma.py`](../schema/validate_gamma.py) · **Conformance vectors:** [`schema/conformance/gamma/`](../schema/conformance/gamma/)
 
 ---
 
@@ -51,6 +51,8 @@ Rationale: it is the only set already shared by three independent surfaces (TS S
 
 ### D2 — Label projection: versioned first-match decision tree (`klm-label/1.0`)
 
+> **Frozen 2026-09-30 (D8).** The body below is `klm-label/1.0` exactly as published on 2026-07-28 and will not change. The grounded-gated projection is a separate id, `klm-label/2.0` (D8).
+
 Evaluated in order; **a gate whose input signal is an honest null is skipped** (not treated as zero — KLM §4.4):
 
 ```
@@ -88,7 +90,80 @@ Normative fields:
 
 ### D6 — Versioning and extensions
 
-Every record carries `schema: "klm-gamma/1.0"`. Extension fields (`warning`, `dominant_source`, `provenance_map`, `tensions`, `audit_ref`, `source_count`) are standardized-optional; producer-specific extras go under `ext.<vendor>.*`. Unknown `ext` keys MUST NOT be rejected.
+Every record carries its schema id — `klm-gamma/1.0`, or `klm-gamma/1.1` (D7). Extension fields (`warning`, `dominant_source`, `provenance_map`, `tensions`, `audit_ref`, `source_count`) are standardized-optional; producer-specific extras go under `ext.<vendor>.*`. Unknown `ext` keys MUST NOT be rejected.
+
+### D7 — `klm-gamma/1.1`: grounded semantics and component status become expressible (2026-09-30, amendment A2)
+
+**Problem.** KLM Specification §5 L4 says an implementation **MUST** declare which meaning `grounded_confidence` carries, and that `grounded_confidence` keeps its components. `klm-gamma/1.0` gave that object exactly `{ formula, value, components }` with no further keys allowed. A producer that did declare the meaning, or the status of each component, could not do so in a conforming 1.0 record. The requirement could not be met.
+
+**Decision.** `klm-gamma/1.1` is a strict superset of 1.0. Every 1.0 rule still applies. It adds:
+
+| Field | Rule |
+|---|---|
+| `grounded_confidence.semantics` | **REQUIRED** when `grounded_confidence` is present. One of `probability_of_correctness`, `evidence_sufficiency`, `support_strength`. A formula id fixes its meaning: `klm-grounded/1.0` is `evidence_sufficiency` (D3), and a record that pairs it with another value is rejected. |
+| `grounded_confidence.component_status` | **REQUIRED** when `grounded_confidence` is present. One entry per key in `components`, plus one per component that is an honest null. A valued entry is `{ status: measured \| heuristic \| synthesized, signal, formula }`; `formula` is **REQUIRED** when `measured`. An honest-null entry is `{ status: "unavailable", reason }`. Under `klm-grounded/1.0`, each of `evidence`, `coherence` and `freshness` has an entry. |
+| `attributed_mass` | Optional, `[0,1]` or honest null. The share of the answer's contribution mass that the implementation attributes to injected, attributable sources rather than to the parametric base. Its status is declared in `signal_status.attributed_mass`. A null carries `nulls.attributed_mass.reason` and has status `unavailable`. It is read by `klm-label/2.0` (D8). |
+| `ext` | Open object for vendor extras, as in 1.0. Vendor routing signals (for example a query-to-source coverage score) belong here, not at the top level. |
+
+**Consistency rules the validator enforces (1.1 only).**
+- Every key in `components` has a `component_status` entry.
+- An `unavailable` component has no value in `components`.
+- A valued status (`measured`, `heuristic`, `synthesized`) has a value in `components`, names its `signal`, and carries no null `reason`.
+- A `measured` component names its formula id.
+- The `label_formula` is `klm-label/1.0` or `klm-label/2.0`, and the label is recomputed under it. Any other id is rejected.
+
+**Dispatch.** The validator reads `schema` and applies that version's rules. `klm-gamma/1.0` records get the published 1.0 rules unchanged. An unknown or missing schema id is an explicit error: the validator never guesses which rules apply.
+
+**Compatibility.** Additive. Every 1.0 record keeps its verdict. A producer moves to 1.1 by adding `semantics` and `component_status`, and optionally `attributed_mass`.
+
+### D8 — Freeze `klm-label/1.0`, publish `klm-label/2.0` (2026-09-30, amendment A3)
+
+**What happened.** `klm-label/1.0` was published on 2026-07-28 with the declared-gated STABLE rule in D2. On 2026-09-10 the reference implementation's maintainers decided that STABLE should rest on the measured `grounded_confidence` rather than on the heuristic `declared_confidence`. That reasoning is sound: STABLE is the strongest label, and grading it on a self-report presents a heuristic as if it were measured (Specification §4.2). But the decision was carried out by **redefining the body of `klm-label/1.0` in place**, keeping the id.
+
+**Why that is itself a violation.** D2 already says thresholds may change only under a new id. The rule exists because a label id is a promise that the label replays. One id with two bodies breaks it over time just as it breaks it across implementations. Outside validators, and every record already stamped `klm-label/1.0`, replay 1.0 with the published body. A record whose label was produced by the new body fails that replay. Neither side can tell which body was meant. The redefined rule also depended on an input specific to the reference implementation: the total routing mass on the user's knowledge sources. No other implementation can compute it, and the γ record does not carry it.
+
+**Decision.**
+1. `klm-label/1.0` is **frozen** exactly as published (D2). The reference validator's 1.0 projection is unchanged and pinned by vectors.
+2. `klm-label/2.0` is published as a new id. It is grounded-gated and vendor-neutral. Its one non-core input, `attributed_mass`, is a `klm-gamma/1.1` field with a vendor-neutral definition (D7).
+3. The validator recomputes the label under the id stamped on the record. An unknown `label_formula` on a 1.1 record is an explicit error.
+4. A `klm-gamma/1.0` record may not carry `klm-label/2.0`, because 1.0 cannot carry `attributed_mass`. `klm-label/2.0` requires `klm-gamma/1.1`.
+
+**`klm-label/2.0`** — evaluated in order, first match wins. A gate whose input is an honest null (or absent) is **skipped**, never read as zero. In rule 5, each disjunct is skipped separately.
+
+| # | Condition | Label | Skipped when |
+|---|---|---|---|
+| 1 | `evidence < 0.05` | SPECULATIVE | evidence null |
+| 2 | `coherence < 0.40` **and** `evidence ≥ 0.20` | CONTESTED | coherence or evidence null |
+| 3 | `freshness < 0.30` | OUTDATED | freshness null |
+| 4 | `grounded ≥ 0.65` **and** `evidence ≥ 0.60` **and** `coherence ≥ 0.72` **and** `attributed_mass ≥ 0.65` | STABLE | coherence, grounded, evidence or `attributed_mass` null. STABLE cannot be reached without them. |
+| 5 | (`evidence ≥ 0.35` **and** `declared ≥ 0.45`) **or** `grounded ≥ 0.55` | PROBABLE | each disjunct is skipped if one of its inputs is null |
+| 6 | otherwise | UNCERTAIN | — |
+
+`grounded` is `grounded_confidence.value`. `declared` feeds only the PROBABLE fallback. STABLE rests on measured signals plus attribution. The declared-minus-grounded gap stays visible as a separate field, and no label consumes it.
+
+**Where 1.0 and 2.0 disagree** (all pinned in `schema/conformance/gamma/vectors.json`):
+
+| Signals | `klm-label/1.0` | `klm-label/2.0` |
+|---|---|---|
+| grounded 0.833, coherence 1.0, evidence 0.75, declared 0.488, attributed_mass 0.70 | PROBABLE (declared < 0.65) | **STABLE** |
+| same, attributed_mass 0.60 or null | PROBABLE | PROBABLE |
+| evidence 0.70, coherence 0.65, declared 0.90, grounded 0.74, attributed_mass 0.40 | **STABLE** (a decisive self-report) | PROBABLE |
+| evidence 0.30, declared 0.20, grounded 0.60 | UNCERTAIN | **PROBABLE** (grounded branch) |
+
+**Calibration note.** The 2.0 thresholds come from the reference implementation's calibration: coherence 0.72 and the 0.65 attribution floor. Calibration depends on the corpus and on how attribution is computed. Another implementation that needs other thresholds publishes another id. It does not reuse `klm-label/2.0` with drifted numbers.
+
+**Migration.** A producer that wants grounded-gated STABLE emits `klm-gamma/1.1` with `attributed_mass` and stamps `klm-label/2.0`. A producer that keeps the declared-gated rule keeps stamping `klm-label/1.0` and stays conformant. Records already stamped `klm-label/1.0` whose label was produced by the grounded-gated body do not replay under 1.0. They are non-conforming as emitted and are not reinterpreted after the fact.
+
+### Honest gaps (D7/D8, 2026-09-30)
+
+1. **The reference implementation is not yet on `klm-label/2.0`.** Its production service stamps `klm-label/1.0` on the grounded-gated body. Its records therefore fail 1.0 replay whenever the two bodies disagree, for example the first row of the table above. This is an **open conformance gap** until the service emits `klm-gamma/1.1`, carries `attributed_mass` on the record, and stamps `klm-label/2.0`. It is not a defect of this standard.
+2. **Its records are not yet valid 1.1 either.** Four things are still missing:
+   - `semantics` is spelled `evidence-sufficiency`. The normative value is `evidence_sufficiency`.
+   - `component_status` covers only the L1 grounding fields. It has no entries for `evidence`, `coherence` and `freshness`.
+   - One component-status entry carries a vendor breakdown outside `ext`.
+   - Two vendor fields sit at the top level instead of under `ext`: a routing-coverage score and a composition manifest.
+3. **`attributed_mass` is not yet emitted by any producer.** The reference implementation computes the quantity internally but does not put it on the record. It also returns `0` where it cannot compute it, where the standard requires an honest null. Until a producer emits it, `klm-label/2.0` STABLE has been exercised only by conformance vectors, not by live records.
+4. **1.0 validator leniency is frozen with 1.0.** The published 1.0 validator does not recompute a label under an id it does not know. It accepts such a record unchecked. That behaviour is kept for 1.0 records and pinned as a known gap. 1.1 closes it.
 
 ## 3. Migration map (per codebase)
 
@@ -103,4 +178,4 @@ Every record carries `schema: "klm-gamma/1.0"`. Extension fields (`warning`, `do
 
 ## 4. Conformance hook
 
-A record valid against `klm-gamma.schema.json` + `validate_gamma.py` semantic checks satisfies the γ portion of **KLM-0 (Declared)**. The same validator, pointed at live `/v1/chat/completions` and `/v1/gamma` outputs, becomes the first executable slice of the KLM conformance suite (Project-Plan Faz 0 exit criterion).
+A record valid against `klm-gamma.schema.json` + `validate_gamma.py` semantic checks satisfies the γ portion of **KLM-0 (Declared)**. `schema/conformance/gamma/run_conformance.py` runs the γ vectors (1.0 regressions, 1.1 rules, and label 1.0 against 2.0) and exits non-zero on any mismatch. The same validator, pointed at live `/v1/chat/completions` and `/v1/gamma` outputs, becomes the first executable slice of the KLM conformance suite (Project-Plan Faz 0 exit criterion).

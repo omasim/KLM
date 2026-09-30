@@ -1,0 +1,127 @@
+{
+ "schema": "klm-conformance-manifest/0.1",
+ "cases": [
+  {
+   "file": "vectors/accept-worked-example.json",
+   "expect": "reach_4",
+   "note": "v0.3 worked example: numeric claim held at unknown, replayable grounded"
+  },
+  {
+   "file": "vectors/accept-legacy-0.1-unchanged.json",
+   "expect": "reach_4",
+   "note": "a klm-attestation/0.1 record keeps its v0.2-spec verdict"
+  },
+  {
+   "file": "vectors/reject-no-output-block.json",
+   "expect": "not_klm0",
+   "note": "§2.6 span unit + output digest required",
+   "reason": "output {span_unit"
+  },
+  {
+   "file": "vectors/reject-bad-span-unit.json",
+   "expect": "not_klm0",
+   "note": "§2.6 unit must be declared from the closed set",
+   "reason": "output.span_unit"
+  },
+  {
+   "file": "vectors/reject-component-without-inputs.json",
+   "expect": "not_klm0",
+   "note": "§5 L4 a component computed from nothing in the record (the 2026-07-31 live-record pattern)",
+   "reason": "inputs must be a non-empty"
+  },
+  {
+   "file": "vectors/reject-component-status-missing.json",
+   "expect": "not_klm0",
+   "note": "§5 L4 component_status required",
+   "reason": "component_status is required"
+  },
+  {
+   "file": "vectors/reject-grounded-does-not-replay.json",
+   "expect": "not_klm0",
+   "note": "§4.3 value must replay under the stamped formula",
+   "reason": "does not replay"
+  },
+  {
+   "file": "vectors/gap-unknown-grounded-formula.json",
+   "expect": "max_level",
+   "note": "§4.3/§8.4 unknown formula: not recomputable → stops before KLM-3",
+   "max_level": 2,
+   "reason": "not recomputable"
+  },
+  {
+   "file": "vectors/reject-contradicted-without-edge.json",
+   "expect": "max_level",
+   "note": "§2.2 contradiction needs its own signal",
+   "max_level": 1,
+   "reason": "without a contradicts edge"
+  },
+  {
+   "file": "vectors/reject-contradiction-from-support-formula.json",
+   "expect": "max_level",
+   "note": "§2.2 silence ≠ contradiction: not the support score",
+   "max_level": 1,
+   "reason": "comes from the support formula"
+  },
+  {
+   "file": "vectors/accept-contradiction-separate-signal.json",
+   "expect": "reach_4",
+   "note": "§2.2 contradiction from a separate versioned method"
+  },
+  {
+   "file": "vectors/reject-lexical-supports-numeric-claim.json",
+   "expect": "max_level",
+   "note": "§5 L1 numbers cap a lexical formula at unknown (v0.2 worked example pattern)",
+   "max_level": 1,
+   "reason": "has numbers"
+  },
+  {
+   "file": "vectors/reject-freshness-without-content-date.json",
+   "expect": "max_level",
+   "note": "§5 L1 freshness is the content's date",
+   "max_level": 1,
+   "reason": "content_date"
+  },
+  {
+   "file": "vectors/reject-invalid-and-null.json",
+   "expect": "not_klm0",
+   "note": "§4.5(4) a signal cannot be both invalid and not-known",
+   "reason": "both invalid"
+  },
+  {
+   "file": "vectors/accept-invalid-distinct-from-absent.json",
+   "expect": "reach_4",
+   "note": "§4.5(4) invalid surfaced as errors, not as null"
+  },
+  {
+   "file": "vectors/reject-composition-missing-key.json",
+   "expect": "not_klm0",
+   "note": "§5 L4 manifest keys always present",
+   "reason": "must be present"
+  },
+  {
+   "file": "vectors/reject-deletion-complete-with-pending.json",
+   "expect": "not_klm0",
+   "note": "§10.2 complete only when every scope is settled",
+   "reason": "not settled"
+  },
+  {
+   "file": "vectors/reject-deletion-complete-undiscovered.json",
+   "expect": "not_klm0",
+   "note": "§10.2 complete requires discovered locations",
+   "reason": "locations_discovered"
+  },
+  {
+   "file": "vectors/reject-legacy-lifecycle-name.json",
+   "expect": "not_klm0",
+   "note": "§10.1 v0.3 names (deleted → forgotten)",
+   "reason": "not a §10.1 state"
+  },
+  {
+   "file": "vectors/reject-supports-on-contradicted.json",
+   "expect": "max_level",
+   "note": "§6.2 a contradicted claim takes contradicts, not supports",
+   "max_level": 1,
+   "reason": "use contradicts"
+  }
+ ]
+}

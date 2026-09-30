@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "klm-conformance"
-version = "0.2.2"
+version = "0.3.0"
 description = "KLM (Knowledge Layers Model) conformance toolchain — validators, signed envelopes, hash-chained logs, disclosure views. Stdlib-only."
 readme = "README.md"
 license = { text = "Apache-2.0" }

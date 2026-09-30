@@ -8,6 +8,10 @@
   "required": ["schema", "inference", "knowledge_contributions", "evidence", "claims", "procedures", "relations"],
   "properties": {
     "schema": { "const": "klm-attestation/0.1" },
+    "canonicalization": {
+      "type": "string",
+      "description": "OPTIONAL. Identifier of the canonical form under which this record's bytes are hashed and signed (Specification §6.4). 'klm-canonical/1' = RFC 8785 JCS; absent = the pre-v0.3 legacy form 'klm-canonical/0-pyjson' (verify-only). A verifier MUST reject an identifier it does not know rather than guess; the set of known identifiers is deliberately not enumerated here so that an unknown id surfaces as an explicit verification error, not a schema failure."
+    },
     "inference": {
       "type": "object",
       "additionalProperties": true,
@@ -144,7 +148,7 @@
     },
     "gamma": {
       "type": ["object", "null"],
-      "description": "Optional embedded klm-gamma/1.0 record (validated by validate_gamma.py when present)."
+      "description": "Optional embedded klm-gamma/1.0 or /1.1 record (validated by validate_gamma.py, which dispatches on its schema id)."
     },
     "relations": {
       "type": "array",
