@@ -8,6 +8,21 @@ existing validators; breaking changes bump the major version and ship with a
 migration note.** The specification document carries its own version and
 changes only through the amendment process (see CONTRIBUTING.md).
 
+## v0.2.2 — 2026-09-30 — First packaged v0.2 toolchain
+
+- **PyPI catch-up.** `klm-conformance` on PyPI was still `0.1.0`, so the
+  validator changes of v0.2.0 (parametric-attribution gate) and v0.2.1
+  (honest-null conformance pack) had never reached `pip install` users. This
+  release packages the v0.2 specification and toolchain as `0.2.2`. The
+  specification text is unchanged (still v0.2).
+- **Disclosure: implementer-declared auditor-visible extensions.**
+  `auditor_view(doc, ext_allow=...)` and `klm-disclose <record> auditor
+  --ext-allow KEY[,KEY...]` keep the named `ext` keys visible in the auditor
+  view — intended for extensions that carry ids and hashes but no content
+  (e.g. a versioned source-chain extension). Default is unchanged: every
+  vendor extension except the standardized `klm_l1` vector stays redacted.
+  Additive; existing callers see identical output.
+
 ## v0.2.1 — 2026-08-02 — Honest Nulls Across Boundaries
 
 - **Amendment accepted** (spec §4.5): the "not-known ≠ zero" guarantee (§4.4)

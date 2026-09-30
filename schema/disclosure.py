@@ -17,7 +17,12 @@ disclosure (Merkle structures / ZK) is the KLM-5 advanced tier (§12.2)
 and deliberately out of v0 scope.
 
 CLI:
-    python3 disclosure.py <record.json|envelope.json> user|auditor|operator
+    python3 disclosure.py <record.json|envelope.json> user|auditor|operator [--ext-allow KEY[,KEY...]]
+
+`--ext-allow` (auditor view only): extension keys the implementer declares
+auditor-visible — e.g. a versioned source-chain extension carrying ids and
+hashes but no content. Default: none; every vendor extension except the
+standardized `klm_l1` vector stays redacted.
 """
 
 from __future__ import annotations
@@ -83,9 +88,13 @@ def user_view(doc: dict) -> dict:
     }
 
 
-def auditor_view(doc: dict) -> dict:
+def auditor_view(doc: dict, ext_allow: frozenset = frozenset()) -> dict:
     """Auditor tier: full provenance + assessments + procedure traces;
-    operator internals (runtime configuration) redacted."""
+    operator internals (runtime configuration) redacted.
+
+    `ext_allow`: extension keys an implementer declares auditor-visible (e.g. a
+    versioned source-chain extension that carries ids/hashes but no content).
+    Default empty — vendor extensions stay redacted unless explicitly allowed."""
     record = _unwrap(doc)
     out = json.loads(json.dumps(record, ensure_ascii=False))  # deep copy
     if isinstance(out.get("inference"), dict) and out["inference"].get("configuration") is not None:
@@ -93,7 +102,8 @@ def auditor_view(doc: dict) -> dict:
     ext = out.get("ext")
     if isinstance(ext, dict):
         # Keep the standardized L1 vector; redact vendor internals.
-        out["ext"] = {k: (v if k == "klm_l1" else dict(REDACTED)) for k, v in ext.items()}
+        out["ext"] = {k: (v if (k == "klm_l1" or k in ext_allow) else dict(REDACTED))
+                      for k, v in ext.items()}
     return {**_base(record, "auditor"), "record": out}
 
 
@@ -106,11 +116,16 @@ VIEWS = {"user": user_view, "auditor": auditor_view, "operator": operator_view}
 
 
 def main(argv: list[str]) -> int:
+    ext_allow: frozenset = frozenset()
+    if len(argv) == 4 and argv[2] == "--ext-allow" and argv[1] == "auditor":
+        ext_allow = frozenset(k.strip() for k in argv[3].split(",") if k.strip())
+        argv = argv[:2]
     if len(argv) != 2 or argv[1] not in VIEWS:
         print(__doc__)
         return 1
     doc = json.load(open(argv[0], encoding="utf-8"))
-    print(json.dumps(VIEWS[argv[1]](doc), indent=1, ensure_ascii=False))
+    view = auditor_view(doc, ext_allow) if argv[1] == "auditor" else VIEWS[argv[1]](doc)
+    print(json.dumps(view, indent=1, ensure_ascii=False))
     return 0
 
 
