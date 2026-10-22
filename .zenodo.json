@@ -6,7 +6,8 @@
   "creators": [
     {
       "name": "Öztürk, Ömer Asım",
-      "affiliation": "Nage AI"
+      "affiliation": "Nage AI",
+      "orcid": "0009-0001-8224-2606"
     }
   ],
   "description": "<p>KLM is a vendor-neutral reference model for attestable knowledge in language-model systems. This record archives the specification text (v0.3), the JSON schemas, the conformance vectors and the stdlib-only reference verifier <code>klm-conformance</code>. Tooling release 0.3.1 adds citation metadata and a <code>--version</code> flag; verdicts are identical to 0.3.0.</p>",

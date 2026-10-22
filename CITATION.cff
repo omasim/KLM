@@ -19,6 +19,7 @@ authors:
   - family-names: "Öztürk"
     given-names: "Ömer Asım"
     affiliation: "Nage AI"
+    orcid: "https://orcid.org/0009-0001-8224-2606"
 identifiers:
   - type: url
     value: "https://pypi.org/project/klm-conformance/"
