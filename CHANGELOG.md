@@ -8,6 +8,13 @@ existing validators; breaking changes bump the major version and ship with a
 migration note.** The specification document carries its own version and
 changes only through the amendment process (see CONTRIBUTING.md).
 
+## v0.3.1 — 2026-10-22 — Citation metadata and `--version`
+
+Tooling-only release. **The specification text, schemas, validators and conformance vectors are unchanged**; every verdict from 0.3.0 is identical.
+
+- Every console script (`klm-validate`, `klm-validate-gamma`, `klm-sign`, `klm-log`, `klm-disclose`) answers `--version` with `klm-conformance <version>`, so a third party can record which verifier produced a verdict without inspecting the installed package. Any other argument list behaves exactly as before.
+- `CITATION.cff` and `.zenodo.json` added; this release is the first archived on Zenodo (DOI appears in the README once minted). `v0.3.0` (`459aa899c42d27afcbaf475546542b7d17d2cc29`) remains the specification-v0.3 reference commit.
+
 ## v0.3.0 — 2026-09-30 — Specification v0.3
 
 Seventeen accepted amendments. Their origin, evidence and compatibility notes are in

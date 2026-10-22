@@ -68,3 +68,8 @@ the conformance suite, and layers we got wrong are the point, not a threat.
 ## License
 
 Apache-2.0. Stewardship: Nage AI.
+
+## Citing
+
+Reference verifier: `klm-conformance` (PyPI) · source `omasim/KLM`. Specification v0.3 reference commit: `v0.3.0` = `459aa899c42d27afcbaf475546542b7d17d2cc29`. Machine-readable metadata: [`CITATION.cff`](CITATION.cff). A Zenodo DOI is minted per release from 0.3.1 onward; the concept DOI will be added here once issued. Verifiers report their version with `klm-validate --version` (also `python3 schema/validate_attestation.py --version` from a checkout).
+

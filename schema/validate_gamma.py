@@ -37,6 +37,7 @@ Exit code 0 = all conforming, 1 = any violation.
 from __future__ import annotations
 
 import json
+import re
 import sys
 
 SCHEMA_ID_1_0 = "klm-gamma/1.0"
@@ -407,6 +408,15 @@ def main(paths: list[str]) -> int:
 
 def cli() -> None:
     """Console-script entry point (pip install klm-conformance)."""
+    if sys.argv[1:] == ["--version"]:
+        try:
+            from . import __version__
+        except ImportError:  # run as a file: `python3 schema/<tool>.py --version` (README)
+            import pathlib
+            __version__ = re.search(r'__version__ = "([^"]+)"',
+                                    pathlib.Path(__file__).with_name("__init__.py").read_text()).group(1)
+        print(f"klm-conformance {__version__}")
+        raise SystemExit(0)
     raise SystemExit(main(sys.argv[1:]))
 
 

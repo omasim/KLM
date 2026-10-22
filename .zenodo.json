@@ -1,0 +1,30 @@
+{
+  "title": "KLM — Knowledge Layers Model: specification and klm-conformance toolchain",
+  "upload_type": "software",
+  "license": "Apache-2.0",
+  "access_right": "open",
+  "creators": [
+    {
+      "name": "Öztürk, Ömer Asım",
+      "affiliation": "Nage AI"
+    }
+  ],
+  "description": "<p>KLM is a vendor-neutral reference model for attestable knowledge in language-model systems. This record archives the specification text (v0.3), the JSON schemas, the conformance vectors and the stdlib-only reference verifier <code>klm-conformance</code>. Tooling release 0.3.1 adds citation metadata and a <code>--version</code> flag; verdicts are identical to 0.3.0.</p>",
+  "keywords": [
+    "attestation",
+    "provenance",
+    "knowledge layers",
+    "conformance",
+    "language models",
+    "epistemic status"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://pypi.org/project/klm-conformance/",
+      "relation": "isSupplementTo",
+      "resource_type": "software"
+    }
+  ],
+  "version": "0.3.1",
+  "language": "eng"
+}

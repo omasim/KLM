@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "If you use KLM or klm-conformance, please cite it using this metadata."
+type: software
+title: "KLM — Knowledge Layers Model: specification and klm-conformance toolchain"
+version: 0.3.1
+date-released: 2026-10-22
+license: Apache-2.0
+repository-code: "https://github.com/omasim/KLM"
+url: "https://github.com/omasim/KLM"
+abstract: "KLM is a vendor-neutral reference model for attestable knowledge in language-model systems: a layered attestation record with explicit epistemic status on every signal, a deterministic mechanical floor, separate declared and grounded confidence, and staged conformance levels. klm-conformance is the stdlib-only reference verifier (validators, Ed25519 envelopes, hash-chained logs, disclosure views)."
+keywords:
+  - attestation
+  - provenance
+  - knowledge-layers
+  - conformance
+  - language-models
+  - epistemic-status
+authors:
+  - family-names: "Öztürk"
+    given-names: "Ömer Asım"
+    affiliation: "Nage AI"
+identifiers:
+  - type: url
+    value: "https://pypi.org/project/klm-conformance/"
+    description: "PyPI package"
