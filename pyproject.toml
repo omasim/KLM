@@ -16,6 +16,8 @@ dependencies = []
 [project.urls]
 Specification = "https://github.com/omasim/KLM"
 Changelog = "https://github.com/omasim/KLM/blob/main/CHANGELOG.md"
+Citation = "https://github.com/omasim/KLM/blob/main/CITATION.cff"
+Issues = "https://github.com/omasim/KLM/issues"
 
 [project.scripts]
 klm-validate = "klm_conformance.validate_attestation:cli"
