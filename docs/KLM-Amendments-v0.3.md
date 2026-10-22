@@ -99,6 +99,13 @@ written against (A17). No published record changes verdict.
 
   Migration: emit `klm-gamma/1.1` with `attributed_mass`, stamp `klm-label/2.0`, and remove the override.
 
+  > **Closed 2026-09-30 — note added 2026-10-22 (v0.3.1), text above kept as published.** The migration shipped
+  > 51 minutes after v0.3.0 was tagged: reference platform commit `69246d2` (2026-09-30 16:48 UTC) emits
+  > `klm-gamma/1.1` with `attributed_mass` and per-component `component_status`, stamps `klm-label/2.0`, and the
+  > environment override is gone. A live production γ record (audit `aud_suJ93P30NZZ0j7X8APsV6Q`) validated
+  > **PASS** under `klm-conformance` 0.3.0 `klm-validate-gamma`; recomputing `klm-label/2.0` reproduced the stamped
+  > label. Same author as the standard — this closes the gap, it does not make the evidence independent (A17).
+
 ## A4 — Formula ids are exact; bodies are publishable (§4.3)
 
 - **Origin.** Two divergences were measured under a single formula id:

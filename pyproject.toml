@@ -8,6 +8,7 @@ dynamic = ["version"]
 description = "KLM (Knowledge Layers Model) conformance toolchain — validators, signed envelopes, hash-chained logs, disclosure views. Stdlib-only."
 readme = "README.md"
 license = { text = "Apache-2.0" }
+authors = [{ name = "Ömer Asım Öztürk" }]
 requires-python = ">=3.9"
 # Deliberately empty: third-party verification must need nothing but Python.
 dependencies = []

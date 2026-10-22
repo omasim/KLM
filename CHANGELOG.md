@@ -13,6 +13,9 @@ changes only through the amendment process (see CONTRIBUTING.md).
 Tooling-only release. **The specification text, schemas, validators and conformance vectors are unchanged**; every verdict from 0.3.0 is identical.
 
 - Every console script (`klm-validate`, `klm-validate-gamma`, `klm-sign`, `klm-log`, `klm-disclose`) answers `--version` with `klm-conformance <version>`, so a third party can record which verifier produced a verdict without inspecting the installed package. Any other argument list behaves exactly as before.
+- `docs/KLM-Amendments-v0.3.md` A3: a dated closure note under "Open conformance gap" — the reference platform's γ migration shipped on 2026-09-30 (`69246d2`), 51 minutes after v0.3.0; the published text is kept.
+- White paper §11: a status paragraph naming the public artifacts behind roadmap steps 1, 3, 4 (specification commit, schema ids, `klm-conformance`) and stating that steps 5–6 remain open.
+- `pyproject.toml`: author metadata.
 - `CITATION.cff` and `.zenodo.json` added; this release is the first archived on Zenodo (DOI appears in the README once minted). `v0.3.0` (`459aa899c42d27afcbaf475546542b7d17d2cc29`) remains the specification-v0.3 reference commit.
 
 ## v0.3.0 — 2026-09-30 — Specification v0.3
