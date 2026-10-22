@@ -73,3 +73,5 @@ Apache-2.0. Stewardship: Nage AI.
 
 Reference verifier: `klm-conformance` (PyPI) · source `omasim/KLM`. Specification v0.3 reference commit: `v0.3.0` = `459aa899c42d27afcbaf475546542b7d17d2cc29`. Machine-readable metadata: [`CITATION.cff`](CITATION.cff). A Zenodo DOI is minted per release from 0.3.1 onward; the concept DOI will be added here once issued. Verifiers report their version with `klm-validate --version` (also `python3 schema/validate_attestation.py --version` from a checkout).
 
+Project pages: [nage.ai/klm](https://nage.ai/klm) · [omerasim.com/en/objects/klm](https://omerasim.com/en/objects/klm) (author's page).
+

@@ -24,6 +24,16 @@
       "identifier": "https://pypi.org/project/klm-conformance/",
       "relation": "isSupplementTo",
       "resource_type": "software"
+    },
+    {
+      "identifier": "https://nage.ai/klm",
+      "relation": "isDescribedBy",
+      "resource_type": "publication-other"
+    },
+    {
+      "identifier": "https://omerasim.com/en/objects/klm",
+      "relation": "isDescribedBy",
+      "resource_type": "publication-other"
     }
   ],
   "version": "0.3.1",
