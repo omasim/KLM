@@ -1,0 +1,85 @@
+{
+  "schema": "klm-attestation/0.1",
+  "request_id": "req_sample_0001",
+  "created_at": "2026-09-14T02:30:00Z",
+  "answer": "Her çıkarım bir tasdik kaydı yayımlar.",
+  "meta": {
+    "tier": "auditor",
+    "disclosure": "klm-disclosure/0.1",
+    "verification": {
+      "signature": "sha256:efc09047e07ebdc3392fde78056f1a7463a9e056589c6c4d384a25b511fbaf4c",
+      "algorithm": "sha256-canonical/2",
+      "scope": "persisted"
+    }
+  },
+  "gamma": {
+    "declared_confidence": 0.91,
+    "grounded_confidence": 0.742,
+    "gap": 0.168,
+    "epistemic_label": "PROBABLE",
+    "grounding": {
+      "claim_support": 0.7124,
+      "evidence_coverage": 0.9286,
+      "source_authority": 0.6,
+      "source_authority_status": "heuristic",
+      "source_freshness": null,
+      "source_freshness_reason": "kaynakta tarih yok",
+      "retrieval_relevance": 0.9422,
+      "retrieval_relevance_status": "measured"
+    },
+    "claims": [
+      {
+        "claim": "Her çıkarım bir tasdik kaydı yayımlar",
+        "evidence_text": "Her çıkarım bir tasdik kaydı yayımlar ve kayıt bağımsız denetlenebilir.",
+        "claim_support": 1.0
+      }
+    ],
+    "composition": {
+      "schema": "klm-composition/0.3",
+      "formulas": {
+        "gamma": "klm-gamma/1.0",
+        "label": "klm-label/1.0",
+        "grounded": "klm-grounded/1.0",
+        "support": "klm-support-lexical/0.1",
+        "coherence": null,
+        "coverage": "klm-coverage-signature-cosine/0.1"
+      },
+      "calibration": {
+        "coherence": null,
+        "coverage": {
+          "threshold": 0.2,
+          "derivation": "leave-one-out-manifold-probe",
+          "doc": "docs/klm-standard/gamma-vector-canonical.md#6"
+        }
+      },
+      "worker": {
+        "model_hash": null,
+        "stria_checkpoint_hash": null,
+        "prompt_template_hash": null,
+        "build_marker": null,
+        "provider": null
+      },
+      "flags": {
+        "KLM_CLAIM_SUPPORT": null,
+        "NAGE_RETRIEVAL_RANK": null,
+        "NAGE_COHERENCE_ENCODER": null,
+        "KLM_COHERENCE_WHITEN": null,
+        "NAGE_APPLY_CLAST": null,
+        "NAGE_ATTN_ATTR_MAX_CHARS": null
+      },
+      "pipeline_running": {
+        "parser_version": "1",
+        "chunker": "_chunk_spans",
+        "chunk_version": "1",
+        "chunk_size": 2000,
+        "chunk_overlap": 200,
+        "provenance_schema": "klm-provenance/0.2"
+      }
+    }
+  },
+  "record_ref": {
+    "record_hash": "sha256:efc09047e07ebdc3392fde78056f1a7463a9e056589c6c4d384a25b511fbaf4c",
+    "record_signature": "ed25519:POfPdOn+BpGs80Xl9xsLnWIEGC9bOtiQSUOdWVCtJX4u634zkONZSdLKSKlWLUPhOLMYEaFGE9yz3Lz2JVECDQ==",
+    "signed_by": "ed25519:sample-not-production"
+  }
+}
