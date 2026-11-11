@@ -24,3 +24,21 @@ identifiers:
   - type: url
     value: "https://pypi.org/project/klm-conformance/"
     description: "PyPI package"
+references:
+  - type: article
+    title: "The Knowledge Layer Model (KLM): Evidence-Visible AI Output, Routing Diagnostics, and Negative Results"
+    authors:
+      - family-names: "Öztürk"
+        given-names: "Ömer Asım"
+        affiliation: "Nage AI"
+        orcid: "https://orcid.org/0009-0001-8224-2606"
+      - family-names: "Aydiner"
+        given-names: "Cihan"
+    year: 2026
+    month: 10
+    doi: "10.48550/arXiv.2610.42066"
+    url: "https://arxiv.org/abs/2610.42066"
+    identifiers:
+      - type: other
+        value: "arXiv:2610.42066"
+        description: "arXiv identifier"
